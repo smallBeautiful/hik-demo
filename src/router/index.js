@@ -107,6 +107,12 @@ export const constantRoutes = [
         name: 'cache',
         component: () => import('@/views/hik/cache'),
         meta: { title: 'cache', icon: 'table' }
+      },
+      {
+        path: 'color',
+        name: 'color',
+        component: () => import('@/views/hik/color'),
+        meta: { title: 'color', icon: 'table' }
       }
     ]
   },
