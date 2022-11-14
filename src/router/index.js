@@ -95,6 +95,18 @@ export const constantRoutes = [
         name: 'drag',
         component: () => import('@/views/hik/drag'),
         meta: { title: '列表拖拽', icon: 'table' }
+      },
+      {
+        path: 'g2table',
+        name: 'g2table',
+        component: () => import('@/views/hik/g2table'),
+        meta: { title: 'g2table', icon: 'table' }
+      },
+      {
+        path: 'cache',
+        name: 'cache',
+        component: () => import('@/views/hik/cache'),
+        meta: { title: 'cache', icon: 'table' }
       }
     ]
   },
