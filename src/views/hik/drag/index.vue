@@ -1,8 +1,22 @@
+<!--
+1. 重新渲染legend
+2. 重新渲染table
+3. 重新渲染图表
+
+1. 无数据的展示
+2. 删除报错
+3. 拖拽
+-->
 <template>
+
   <div>
     <transition-group name="drag" class="list" tag="ul">
+      <li :key="0" class="list-item">
+        hello
+      </li>
       <li
         v-for="(item, index) in list"
+        v-if="index > 0"
         :key="item.label"
         draggable
         class="list-item"
@@ -10,7 +24,13 @@
         @dragover="dragover($event, index)"
         @dragstart="dragstart(index)"
       >
-        {{ item.label }}
+        <div>
+          <div>
+            <span style="cursor:pointer;">21212</span>
+            <span>{{ item.label }}</span>
+          </div>
+
+        </div>
       </li>
     </transition-group>
   </div>
@@ -43,6 +63,7 @@ export default {
         this.list.splice(index, 0, moving)
         this.dragIndex = index
       }
+      console.log(this.list)
     },
     dragover(e, index) {
       e.preventDefault()
