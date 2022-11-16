@@ -113,6 +113,12 @@ export const constantRoutes = [
         name: 'color',
         component: () => import('@/views/hik/color'),
         meta: { title: 'color', icon: 'table' }
+      },
+      {
+        path: 'fold',
+        name: 'fold',
+        component: () => import('@/views/hik/fold'),
+        meta: { title: 'fold', icon: 'table' }
       }
     ]
   },
