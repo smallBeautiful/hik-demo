@@ -48,7 +48,7 @@ export default {
 }
 </script>
 
-<style scoped lang="less">
+<style scoped lang="scss">
 .item {
   border: 2px transparent;
   display: inline-block;

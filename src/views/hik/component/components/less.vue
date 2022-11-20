@@ -8,7 +8,7 @@ export default {
 }
 </script>
 
-<style scoped lang="less">
+<style scoped lang="scss">
 .less {
   font-size: 20px;
 }

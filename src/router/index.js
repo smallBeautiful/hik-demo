@@ -60,7 +60,7 @@ export const constantRoutes = [
     component: Layout,
     redirect: '/utils/tree',
     name: 'Tree',
-    meta: { title: 'Tree', icon: 'el-icon-s-help' },
+    meta: { title: 'Utils', icon: 'el-icon-s-help' },
     children: [
       {
         path: 'tree',
@@ -113,6 +113,18 @@ export const constantRoutes = [
         name: 'fold',
         component: () => import('@/views/hik/fold'),
         meta: { title: 'fold', icon: 'table' }
+      },
+      {
+        path: 'interval',
+        name: 'interval',
+        component: () => import('@/views/hik/interval'),
+        meta: { title: '柱状图', icon: 'table' }
+      },
+      {
+        path: 'intervalStack',
+        name: 'intervalStack',
+        component: () => import('@/views/hik/intervalStack'),
+        meta: { title: '堆叠柱状图', icon: 'table' }
       }
     ]
   },

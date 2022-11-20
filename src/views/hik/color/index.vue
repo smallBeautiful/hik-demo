@@ -35,7 +35,7 @@ export default {
 }
 </script>
 
-<style scoped lang="less">
+<style scoped lang="scss">
 .item {
   display: inline-block;
   width: 20px;

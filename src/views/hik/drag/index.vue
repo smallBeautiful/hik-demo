@@ -71,7 +71,7 @@ export default {
   }
 }
 </script>
-<style lang="less" scoped>
+<style lang="scss" scoped>
 .list {
   list-style: none;
   .drag-move {
