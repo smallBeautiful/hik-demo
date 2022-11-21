@@ -125,6 +125,12 @@ export const constantRoutes = [
         name: 'intervalStack',
         component: () => import('@/views/hik/intervalStack'),
         meta: { title: '堆叠柱状图', icon: 'table' }
+      },
+      {
+        path: 'tabHidden',
+        name: 'tabHidden',
+        component: () => import('@/views/hik/tabHidden'),
+        meta: { title: '隐藏样式', icon: 'table' }
       }
     ]
   },
