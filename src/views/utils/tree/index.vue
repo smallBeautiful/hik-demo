@@ -18,13 +18,30 @@
         扁平数据转换树形
         <el-tree v-if="transformTree.length" default-expand-all :data="transformTree" :props="defaultProps" />
       </div>
+      <div style="margin-left: 50px">
+        element 自带
+        <el-input
+          v-model="filterText"
+          placeholder="输入关键字进行过滤"
+        />
+        <el-tree
+          v-if="listDisplay.length"
+          ref="tree"
+          default-expand-all
+          :data="listDisplay"
+          :props="defaultProps"
+          :filter-node-method="filterNode"
+          :expand-on-click-node="false"
+          @node-click="handleNodeClick"
+        />
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import { getTreeList } from '@/api/tree'
-import { treeToFlat, flatToTree } from '@/utils/tree'
+import { treeToFlat, flatToTree, getAllParentNode } from '@/utils/tree'
 import { cloneDeep } from 'lodash'
 import { searchTree } from './tree/index'
 export default {
@@ -40,13 +57,30 @@ export default {
       defaultProps: {
         children: 'childrens',
         label: 'name'
-      }
+      },
+      filterText: ''
+    }
+  },
+  watch: {
+    filterText(val) {
+      this.$refs.tree.filter(val)
     }
   },
   mounted() {
     this.getList()
   },
   methods: {
+    handleNodeClick(e) {
+      const res = getAllParentNode(this.list, e.id, { id: 'id', children: 'childrens' })
+      const path = res.map(item => {
+        return item.name
+      }).join(' ')
+      console.log(path)
+    },
+    filterNode(value, data) {
+      if (!value) return true
+      return data.name.indexOf(value) !== -1
+    },
     change(value) {
       this.value = value.trim()
       if (!this.value) {

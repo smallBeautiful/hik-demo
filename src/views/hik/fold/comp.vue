@@ -1,7 +1,7 @@
 <template>
   <div class="chart">
     <div class="legend">
-      <span v-for="(item, index) in legendList" :key="index" @mouseenter="mouseenter(index)" @mouseleave="mouseleave(index)"><i :style="{backgroundColor:colorList[index]}" />{{ item.name }}</span>
+      <span v-for="(item, index) in legendList" :key="index" class="contain" @click="mouseenter(index)"><i class="contain" :style="{backgroundColor:colorList[index]}" />{{ item.name }}</span>
     </div>
     <div :id="charts.id" />
   </div>
@@ -9,16 +9,35 @@
 
 <script>
 
-const transPose = (array) => {
-  const result = []
-  for (let i = 0; i < array[0].length; i++) {
-    const row = []
-    for (let j = 0; j < array.length; j++) {
-      row.push(array[j][i])
+/* istanbul ignore next */
+export const on = (function() {
+  if (document.addEventListener) {
+    return function(element, event, handler) {
+      if (element && event && handler) {
+        element.addEventListener(event, handler, false)
+      }
     }
-    result.push(row)
   }
-  return result
+})()
+
+export const off = (function() {
+  if (document.removeEventListener) {
+    return function(element, event, handler) {
+      if (element && event) {
+        element.removeEventListener(event, handler, false)
+      }
+    }
+  }
+})()
+
+export function hasClass(el, cls) {
+  if (!el || !cls) return false
+  if (cls.indexOf(' ') !== -1) throw new Error('className should not contain space.')
+  if (el.classList) {
+    return el.classList.contains(cls)
+  } else {
+    return (' ' + el.className + ' ').indexOf(' ' + cls + ' ') > -1
+  }
 }
 
 import G2 from '@antv/g2'
@@ -39,13 +58,24 @@ export default {
       tipsList: [],
       colorList: ['#519670', '#96bb8f', '#4f7e57', '#93b469', '#008e59', '#006e5f'],
       percentList: [],
-      percentListTranspose: []
+      percentListTranspose: [],
+      index: -1
     }
   },
   mounted() {
+    on(document, 'click', this.test)
     this.init()
   },
+  beforeDestroy() {
+    off(document, 'click', this.test)
+  },
   methods: {
+    test(e) {
+      const isHas = hasClass(e.target, 'contain')
+      if (!isHas) {
+        this.mouseleave()
+      }
+    },
     init() {
       this.legendList = this.charts.legendList
       this.key = this.charts.key
@@ -110,6 +140,9 @@ export default {
       this.tipsList = res5
     },
     mouseenter(index) {
+      if (index === this.index) return
+      this.mouseleave()
+      this.index = index
       const point = JSON.parse(JSON.stringify(this.tipsList[index]))
       for (let i = 0, len = point.length; i < len; i++) {
         const text = `${this.percentList[i][index]}% (${this.charts.valueList[i][index]}人)`
@@ -126,6 +159,7 @@ export default {
       this.chartInstance.render()
     },
     mouseleave() {
+      this.index = -1
       this.chartInstance.guide().clear()
       this.chartInstance.repaint()
     },

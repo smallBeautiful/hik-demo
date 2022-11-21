@@ -110,3 +110,38 @@ export const findCurNode2 = (tree, curKey, keyField, node = null) => {
   }
   return node
 }
+
+/*
+* 获取当前节点祖先节点
+* */
+function getParentNode(data, key, props = { id: 'id', children: 'children' }) {
+  let result = null
+  for (let i = 0; i < data.length; i++) {
+    if (data[i][props.children]?.length) {
+      if (data[i][props.children].some(item => item.id === key)) {
+        result = data[i]
+        break
+      } else {
+        const temp = getParentNode(data[i][props.children], key, props)
+        if (temp) {
+          result = temp
+          break
+        }
+      }
+    }
+  }
+  return result
+}
+
+export const getAllParentNode = (data, key, props = { id: 'id', children: 'children' }) => {
+  const arr = []
+  const fn = (data, key) => {
+    const p = getParentNode(data, key, props)
+    if (p && p[props.id]) {
+      arr.push(p)
+      fn(data, p[props.id])
+    }
+  }
+  fn(data, key)
+  return arr
+}
