@@ -131,6 +131,18 @@ export const constantRoutes = [
         name: 'tabHidden',
         component: () => import('@/views/hik/tabHidden'),
         meta: { title: '隐藏样式', icon: 'table' }
+      },
+      {
+        path: 'scroll',
+        name: 'scroll',
+        component: () => import('@/views/hik/scrollChar'),
+        meta: { title: '滚动图表', icon: 'table' }
+      },
+      {
+        path: 'scroll2',
+        name: 'scroll2',
+        component: () => import('@/views/hik/scroll2/index'),
+        meta: { title: '滚动图表2', icon: 'table' }
       }
     ]
   },
