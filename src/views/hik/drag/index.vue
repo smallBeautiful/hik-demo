@@ -1,37 +1,16 @@
-<!--
-1. 重新渲染legend
-2. 重新渲染table
-3. 重新渲染图表
-
-1. 无数据的展示
-2. 删除报错
-3. 拖拽
--->
 <template>
-
-  <div>
-    <transition-group name="drag" class="list" tag="ul">
-      <li :key="0" class="list-item">
-        hello
-      </li>
-      <li
-        v-for="(item, index) in list"
-        v-if="index > 0"
-        :key="item.label"
-        draggable
-        class="list-item"
-        @dragenter="dragenter($event, index)"
-        @dragover="dragover($event, index)"
-        @dragstart="dragstart(index)"
-      >
-        <div>
-          <div>
-            <span style="cursor:pointer;">21212</span>
-            <span>{{ item.label }}</span>
-          </div>
-
-        </div>
-      </li>
+  <div class="drag-wrap">
+    <h2>这是一个列表拖拽</h2>
+    <transition-group name="List">
+      <div
+        v-for="item in List"
+        :key="item.id"
+        class="drag-list"
+        draggable="true"
+        @dragstart="dragstart(item)"
+        @dragenter="dragenter(item)"
+        @dragend="dragend(item)"
+      >{{ item.title }}</div>
     </transition-group>
   </div>
 </template>
@@ -39,54 +18,68 @@
 export default {
   data() {
     return {
-      list: [
-        { label: '列表1' },
-        { label: '列表2' },
-        { label: '列表3' },
-        { label: '列表4' },
-        { label: '列表5' },
-        { label: '列表6' }
+      List: [
+        { id: 1, title: '这里是列表1的标题' },
+        { id: 2, title: '这里是列表2的标题' },
+        { id: 3, title: '这里是列表3的标题' },
+        { id: 4, title: '这里是列表4的标题' },
+        { id: 5, title: '这里是列表5的标题' },
+        { id: 6, title: '这里是列表6的标题' },
+        { id: 7, title: '这里是列表7的标题' }
       ],
-      dragIndex: '',
-      enterIndex: ''
+      oldItem: '',
+      newItem: ''
     }
   },
   methods: {
-    dragstart(index) {
-      this.dragIndex = index
+    // 记录初始信息
+    dragstart(item) {
+      this.oldItem = item
     },
-    dragenter(e, index) {
-      e.preventDefault()
-      if (this.dragIndex !== index) {
-        const moving = this.list[this.dragIndex]
-        this.list.splice(this.dragIndex, 1)
-        this.list.splice(index, 0, moving)
-        this.dragIndex = index
+    // 记录过程中信息
+    dragenter(item) {
+      console.log(111)
+      this.newItem = item
+      if (this.oldItem !== this.newItem) {
+        const oldIndex = this.List.indexOf(this.oldItem)
+        const newIndex = this.List.indexOf(this.newItem)
+        const newList = [...this.List] // 中间数组，用于交换两个节点
+        // 删除老的节点
+        newList.splice(oldIndex, 1)
+        // 在列表目标位置增加新的节点
+        newList.splice(newIndex, 0, this.oldItem)
+        // 更新this.List，触发transition-group的动画效果
+        this.List = [...newList]
       }
-      console.log(this.list)
     },
-    dragover(e, index) {
-      e.preventDefault()
+    // 做最终操作
+    dragend(item) {
+      // if (this.oldItem !== this.newItem) {
+      //   const oldIndex = this.List.indexOf(this.oldItem)
+      //   const newIndex = this.List.indexOf(this.newItem)
+      //   const newList = [...this.List] // 中间数组，用于交换两个节点
+      //   // 删除老的节点
+      //   newList.splice(oldIndex, 1)
+      //   // 在列表目标位置增加新的节点
+      //   newList.splice(newIndex, 0, this.oldItem)
+      //   // 更新this.List，触发transition-group的动画效果
+      //   this.List = [...newList]
+      // }
     }
   }
 }
 </script>
-<style lang="scss" scoped>
-.list {
-  list-style: none;
-  .drag-move {
-    transition: transform 0.3s;
+<style scoped>
+  .List-move {
+    transition: transform .2s;
   }
-  .list-item {
-    cursor: move;
+  .drag-list {
+    margin: 10px auto;
     width: 300px;
-    background: #EA6E59;
-    border-radius: 4px;
-    color: #FFF;
-    margin-bottom: 6px;
     height: 50px;
     line-height: 50px;
     text-align: center;
+    border: 1px solid #20a0ff;
+    background-color: #bfa;
   }
-}
 </style>

@@ -148,6 +148,22 @@ export const constantRoutes = [
   },
 
   {
+    path: '/element',
+    component: Layout,
+    redirect: '/element/checkbox',
+    name: 'element',
+    meta: { title: 'element组件', icon: 'el-icon-s-help' },
+    children: [
+      {
+        path: 'checkbox',
+        name: 'checkbox',
+        component: () => import('@/views/element/checkbox-disabled'),
+        meta: { title: 'checkbox', icon: 'table' }
+      }
+    ]
+  },
+
+  {
     path: '/form',
     component: Layout,
     children: [
