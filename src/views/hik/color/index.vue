@@ -1,23 +1,35 @@
 <template>
   <div class="app-container">
-    <span v-for="(item, index) in colorList" v-if="colorRender" :key="index" class="item" :style="{backgroundColor:item}" @click="handleColor(index)" />
+    <span v-if="colorRender">
+      <span v-for="(item, index) in colorList" :key="index" class="item" :style="{backgroundColor:item}" @click="handleColor(index)" />
+    </span>
     <color ref="color" @setColor="setColor" />
+    <drag />
   </div>
 </template>
 
 <script>
+import Drag from '../drag'
 import color from '@/views/hik/color/color'
+import { mapState } from 'vuex'
 export default {
   name: 'Color',
   components: {
-    color
+    color,
+    Drag
   },
   data() {
     return {
-      colorList: ['#BEC5B5', '#B8C8B7', '#507883', '#5c5a46', '#4a6f5d'],
       colorIndex: -1,
-      colorRender: true
+      colorRender: true,
+      colorList: []
     }
+  },
+  computed: {
+    ...mapState('hik', ['colorListOrign', 'colorListDisplay'])
+  },
+  mounted() {
+    this.colorList = JSON.parse(JSON.stringify(this.colorListOrign))
   },
   methods: {
     setColor(color) {

@@ -14,15 +14,21 @@
     </span>
   </el-dialog>
 </template>
-
 <script>
+import { mapState } from 'vuex'
 export default {
   data() {
     return {
       dialogVisible: false,
-      colorList: ['#BEC5B5', '#B8C8B7', '#507883', '#5c5a46', '#4a6f5d'],
+      colorList: [],
       curColor: ''
     }
+  },
+  computed: {
+    ...mapState('hik', ['colorListOrign'])
+  },
+  mounted() {
+    this.colorList = JSON.parse(JSON.stringify(this.colorListOrign))
   },
   methods: {
     active(color) {
