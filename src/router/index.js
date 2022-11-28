@@ -127,6 +127,12 @@ export const constantRoutes = [
         meta: { title: '堆叠柱状图', icon: 'table' }
       },
       {
+        path: 'intervalGroup',
+        name: 'intervalGroup',
+        component: () => import('@/views/hik/intervalGroup'),
+        meta: { title: '分组柱状图', icon: 'table' }
+      },
+      {
         path: 'tabHidden',
         name: 'tabHidden',
         component: () => import('@/views/hik/tabHidden'),
