@@ -129,8 +129,14 @@ export const constantRoutes = [
       {
         path: 'intervalGroup',
         name: 'intervalGroup',
-        component: () => import('@/views/hik/intervalGroup'),
+        component: () => import('@/views/hik/intervalGroup/index'),
         meta: { title: '分组柱状图', icon: 'table' }
+      },
+      {
+        path: 'intervalGroupPlot',
+        name: 'intervalGroupPlot',
+        component: () => import('@/views/hik/intervalGroupPlot'),
+        meta: { title: '分组柱状图Plot', icon: 'table' }
       },
       {
         path: 'tabHidden',

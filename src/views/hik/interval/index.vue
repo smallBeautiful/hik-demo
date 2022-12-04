@@ -80,69 +80,66 @@ export default {
     },
     renderChart2() {
       const data = [
-        { name: 'London', 月份: 'Jan.', 月均降雨量: 18.9 },
-        { name: 'London', 月份: 'Feb.', 月均降雨量: 28.8 },
-        { name: 'London', 月份: 'Mar.', 月均降雨量: 39.3 },
-        { name: 'London', 月份: 'Apr.', 月均降雨量: 81.4 },
-        { name: 'London', 月份: 'May', 月均降雨量: 47 },
-        { name: 'London', 月份: 'Jun.', 月均降雨量: 20.3 },
-        { name: 'London', 月份: 'Jul.', 月均降雨量: 24 },
-        { name: 'London', 月份: 'Aug.', 月均降雨量: 35.6 },
-        { name: 'London', 月份: 'Aug1.', 月均降雨量: 35.6 },
-        { name: 'London', 月份: 'Aug2.', 月均降雨量: 35.6 },
-        { name: 'London', 月份: 'Aug3.', 月均降雨量: 35.6 },
-        { name: 'London', 月份: 'Aug4.', 月均降雨量: 35.6 },
-        { name: 'London', 月份: 'Aug5.', 月均降雨量: 35.6 },
-        { name: 'London', 月份: 'Aug15.', 月均降雨量: 35.6 },
-        { name: 'London', 月份: 'Aug25.', 月均降雨量: 35.6 },
-        { name: 'London', 月份: 'Aug35.', 月均降雨量: 35.6 },
-        { name: 'London', 月份: 'Aug45.', 月均降雨量: 35.6 },
-        { name: 'London', 月份: 'Aug55.', 月均降雨量: 35.6 },
-        { name: 'London', 月份: 'Aug65.', 月均降雨量: 35.6 },
-        { name: 'London', 月份: 'Aug115.', 月均降雨量: 35.6 },
-        { name: 'London', 月份: 'Aug225.', 月均降雨量: 35.6 },
-        { name: 'London', 月份: 'Aug335.', 月均降雨量: 35.6 },
-        { name: 'London', 月份: 'Aug445.', 月均降雨量: 35.6 },
-        { name: 'London', 月份: 'Aug555.', 月均降雨量: 35.6 },
-        { name: 'London', 月份: 'Aug665.', 月均降雨量: 35.6 },
+        { company: 'Apple', type: '整体', value: '30' },
+        { company: 'Facebook', type: '整体', value: '35' },
+        { company: 'Google', type: '整体', value: '28' },
 
-        { name: 'Berlin', 月份: 'Jan.', 月均降雨量: 12.4 },
-        { name: 'Berlin', 月份: 'Feb.', 月均降雨量: 23.2 },
-        { name: 'Berlin', 月份: 'Mar.', 月均降雨量: 34.5 },
-        { name: 'Berlin', 月份: 'Apr.', 月均降雨量: 99.7 },
-        { name: 'Berlin', 月份: 'May', 月均降雨量: 52.6 },
-        { name: 'Berlin', 月份: 'Jun.', 月均降雨量: 35.5 },
-        { name: 'Berlin', 月份: 'Jul.', 月均降雨量: 37.4 },
-        { name: 'Berlin', 月份: 'Aug.', 月均降雨量: 42.4 },
-        { name: 'Berlin', 月份: 'Aug1.', 月均降雨量: 42.4 },
-        { name: 'Berlin', 月份: 'Aug2.', 月均降雨量: 42.4 },
-        { name: 'Berlin', 月份: 'Aug3.', 月均降雨量: 42.4 },
-        { name: 'Berlin', 月份: 'Aug4.', 月均降雨量: 42.4 },
-        { name: 'Berlin', 月份: 'Aug5.', 月均降雨量: 42.4 },
-        { name: 'Berlin', 月份: 'Aug15.', 月均降雨量: 42.4 },
-        { name: 'Berlin', 月份: 'Aug25.', 月均降雨量: 42.4 },
-        { name: 'Berlin', 月份: 'Aug35.', 月均降雨量: 42.4 },
-        { name: 'Berlin', 月份: 'Aug45.', 月均降雨量: 42.4 },
-        { name: 'Berlin', 月份: 'Aug55.', 月均降雨量: 42.4 },
-        { name: 'Berlin', 月份: 'Aug65.', 月均降雨量: 42.4 },
-        { name: 'Berlin', 月份: 'Aug115.', 月均降雨量: 42.4 },
-        { name: 'Berlin', 月份: 'Aug225.', 月均降雨量: 42.4 },
-        { name: 'Berlin', 月份: 'Aug335.', 月均降雨量: 42.4 },
-        { name: 'Berlin', 月份: 'Aug445.', 月均降雨量: 42.4 },
-        { name: 'Berlin', 月份: 'Aug555.', 月均降雨量: 42.4 },
-        { name: 'Berlin', 月份: 'Aug665.', 月均降雨量: 42.4 }
+        { company: 'Apple', type: '非技术岗', value: '40' },
+        { company: 'Facebook', type: '非技术岗', value: '65' },
+        { company: 'Google', type: '非技术岗', value: '47' },
+
+        { company: 'Apple', type: '技术岗', value: '23' },
+        { company: 'Facebook', type: '技术岗', value: '18' },
+        { company: 'Google', type: '技术岗', value: '20' },
+
+        { company: 'Apple', type: '技术岗', value: '35' },
+        { company: 'Facebook', type: '技术岗', value: '30' },
+        { company: 'Google', type: '技术岗', value: '25' }
       ]
 
       const chart = new G2.Chart({
         container: 'interval',
         forceFit: true,
-        height: 500
+        height: 500,
+        padding: 'auto'
       })
       chart.source(data)
-      chart.interval().position('月份*name').color('月均降雨量').size(40)
+      chart.scale('value', {
+        alias: '占比（%）',
+        max: 75,
+        min: 0,
+        tickCount: 4
+      })
+      chart.axis('type', {
+        label: {
+          textStyle: {
+            fill: '#aaaaaa'
+          }
+        },
+        tickLine: {
+          alignWithLabel: false,
+          length: 0
+        }
+      })
+
+      chart.axis('value', {
+        label: {
+          textStyle: {
+            fill: '#aaaaaa'
+          }
+        },
+        title: {
+          offset: 50
+        }
+      })
+      chart.legend({
+        position: 'top-center'
+      })
+      chart.interval().position('type*value').color('company')
+        .opacity(1)
         .adjust([{
           type: 'dodge',
-          marginRatio: 0.5
+          marginRatio: 1 / 32
         }])
       chart.render()
     }
