@@ -48,31 +48,29 @@ export default {
     },
     initData() {
       this.originData = [
-        { name: '信息化开发', value: '12', percent: '45', type: '主样本' },
-        { name: '信息化开发', value: '13', percent: '34', type: 'HR开发一组' },
-        { name: '信息化开发', value: '16', percent: '12', type: 'HR开发二组' },
-        { name: '信息化开发', value: '1', percent: '0', type: 'HR开发三组' },
-        { name: '信息化开发1', value: '12', percent: '45', type: '主样本' },
-        { name: '信息化开发1', value: '13', percent: '34', type: 'HR开发一组' },
-        { name: '信息化开发1', value: '16', percent: '12', type: 'HR开发二组' },
-        { name: '信息化开发1', value: '1', percent: '0', type: 'HR开发三组' },
-        { name: '信息化开发2', value: '12', percent: '45', type: '主样本' },
-        { name: '信息化开发2', value: '13', percent: '34', type: 'HR开发一组' },
-        { name: '信息化开发2', value: '16', percent: '12', type: 'HR开发二组' },
-        { name: '信息化开发2', value: '1', percent: '0', type: 'HR开发三组' },
-        { name: '信息化开发经理', value: '0', percent: '90', type: '主样本' },
-        { name: '信息化开发经理', value: '4', percent: '12', type: 'HR开发一组' },
-        { name: '信息化开发经理', value: '7', percent: '13', type: 'HR开发二组' },
-        { name: '信息化开发经理', value: '9', percent: '12', type: 'HR开发三组' },
-        { name: '信息化开发经理1', value: '0', percent: '90', type: '主样本' },
-        { name: '信息化开发经理1', value: '4', percent: '12', type: 'HR开发一组' },
-        { name: '信息化开发经理1', value: '7', percent: '13', type: 'HR开发二组' },
-        { name: '信息化开发经理1', value: '9', percent: '12', type: 'HR开发三组' },
-        { name: '信息化开发经理2', value: '0', percent: '90', type: '主样本' },
-        { name: '信息化开发经理2', value: '4', percent: '12', type: 'HR开发一组' },
-        { name: '信息化开发经理2', value: '7', percent: '13', type: 'HR开发二组' },
-        { name: '其他', value: '12', percent: '12', type: '主样本' },
-        { name: 'IT部总经理', value: '11', percent: '21', type: '主样本' }
+        { nums: 4, name: '信息化开发', value: '12', percent: 80, type: '主样本' },
+        { nums: 4, name: '信息化开发', value: '13', percent: 34, type: 'HR开发一组' },
+        { nums: 4, name: '信息化开发', value: '16', percent: 0, type: 'HR开发二组' },
+        { nums: 4, name: '信息化开发', value: '1', percent: 30, type: 'HR开发三组' },
+        { nums: 4, name: '信息化开发1', value: '13', percent: 34, type: 'HR开发一组' },
+        { nums: 4, name: '信息化开发1', value: '16', percent: 12, type: 'HR开发二组' },
+        { nums: 4, name: '信息化开发2', value: '12', percent: 45, type: '主样本' },
+        { nums: 4, name: '信息化开发2', value: '13', percent: 34, type: 'HR开发一组' },
+        { nums: 4, name: '信息化开发2', value: '16', percent: 12, type: 'HR开发二组' },
+        { nums: 4, name: '信息化开发2', value: '1', percent: 0, type: 'HR开发三组' },
+        { nums: 4, name: '信息化开发经理', value: '0', percent: 90, type: '主样本' },
+        { nums: 4, name: '信息化开发经理', value: '4', percent: 12, type: 'HR开发一组' },
+        { nums: 4, name: '信息化开发经理', value: '7', percent: 13, type: 'HR开发二组' },
+        { nums: 4, name: '信息化开发经理', value: '9', percent: 12, type: 'HR开发三组' },
+        { nums: 4, name: '信息化开发经理1', value: '0', percent: 90, type: '主样本' },
+        { nums: 4, name: '信息化开发经理1', value: '4', percent: 12, type: 'HR开发一组' },
+        { nums: 4, name: '信息化开发经理1', value: '7', percent: 13, type: 'HR开发二组' },
+        { nums: 4, name: '信息化开发经理1', value: '9', percent: 12, type: 'HR开发三组' },
+        { nums: 4, name: '信息化开发经理2', value: '0', percent: 90, type: '主样本' },
+        { nums: 4, name: '信息化开发经理2', value: '4', percent: 12, type: 'HR开发一组' },
+        { nums: 4, name: '信息化开发经理2', value: '7', percent: 13, type: 'HR开发二组' },
+        { nums: 4, name: '其他', value: '12', percent: '12', type: '主样本' },
+        { nums: 4, name: 'IT部总经理', value: '11', percent: '21', type: '主样本' }
       ]
       this.originSplitData = arrayGroupBy(this.originData, 'name')
       // 小于4就不切割
@@ -94,22 +92,76 @@ export default {
       this.init()
     },
     init() {
+      // console.log(JSON.parse(JSON.stringify(this.currentData)))
+      // const res = arrayGroupBy(JSON.parse(JSON.stringify(this.currentData)), 'name')
+      const res = this.currentData
       chartInstance && chartInstance.destroy()
       chartInstance = new G2.Chart({
         container: 'intervalGroup',
-        forceFit: true,
         height: 500,
-        padding: [10, 10, 30, 10],
-        animate: false
+        forceFit: true,
+        padding: [10, 10, 30, 40]
       })
-      chartInstance.source(this.currentData)
+      chartInstance.scale('percent', {
+        min: 0,
+        max: 100
+      })
+      chartInstance.source(res)
       chartInstance.legend(false)
-      chartInstance.interval().position('name*percent').color('type')
+      chartInstance.interval().position('name*percent').color('type').size(30)
         .adjust([{
           type: 'dodge',
-          dodgeBy: 'type',
-          marginRatio: 1 / 1000
+          marginRatio: 0,
+          nums: 4
         }])
+
+      chartInstance.render()
+    },
+    init2() {
+      const res = arrayGroupBy(JSON.parse(JSON.stringify(this.currentData)), 'name')
+      chartInstance && chartInstance.destroy()
+      chartInstance = new G2.Chart({
+        container: 'intervalGroup',
+        height: 500,
+        forceFit: true,
+        padding: [10, 10, 30, 40]
+      })
+      chartInstance.scale('percent', {
+        min: 0,
+        max: 100
+      })
+
+      // const view = chartInstance.view()
+      // view.source(res[0])
+      // view.interval().position('name*percent').color('type').size(30)
+      //   .adjust([{
+      //     type: 'dodge',
+      //     marginRatio: 0
+      //   }])
+
+      const view2 = chartInstance.view()
+      view2.source(res[1])
+      view2.interval().position('name*percent').color('type').size(30)
+        .adjust([{
+          type: 'dodge',
+          marginRatio: 0
+        }])
+      view2.axis('name', false)
+
+      const view3 = chartInstance.view()
+      view3.source(res[2])
+      view3.interval().position('name*percent').color('type').size(30)
+        .adjust([{
+          type: 'dodge',
+          marginRatio: 0
+        }])
+      // chartInstance.source(res[1])
+      // chartInstance.legend(false)
+      // chartInstance.interval().position('name*percent').color('type').size(30)
+      //   .adjust([{
+      //     type: 'dodge',
+      //     marginRatio: -0.92
+      //   }])
 
       chartInstance.render()
     }
