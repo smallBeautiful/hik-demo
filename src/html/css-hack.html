@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CSS HACK</title>
+  <style>
+    .box {
+      display: flex;
+      width: 20%;
+      border: 1px solid #666666;
+      word-wrap: break-word;
+    }
+    .box span {
+      color: red;
+      white-space: nowrap;
+    }
+    *::-ms-backdrop, .box span {
+      color: blue;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <div>
+      <span>132323232</span>
+      <span>132323232</span>
+      <span>132323232</span>
+      <span>132323232</span>
+      <span>132323232</span>
+      <span>132323232</span>
+      <span>132323232</span>
+      <span>132323232</span>
+      <span>132323232</span>
+      <span>132323232</span>
+      <span>132323232</span>
+      <span>132323232</span>
+      <span>132323232</span>
+      <span>132323232</span>
+      <span>132323232</span>
+    </div>
+  </div>
+</body>
+</html>
