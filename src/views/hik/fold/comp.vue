@@ -178,7 +178,7 @@ export default {
       this.chartInstance = new G2.Chart({
         container: _this.charts.id,
         forceFit: true,
-        height: 400,
+        height: 120,
         animate: false
       })
       this.chartInstance.scale(_this.name, {
@@ -220,7 +220,7 @@ export default {
               <div/>`
         }
       })
-      this.chartInstance.intervalStack().position(`${_this.name}*比例`).color(_this.key, _this.colorList).size(30)
+      this.chartInstance.intervalStack().position(`${_this.name}*比例`).color(_this.key, _this.colorList).size(50)
       this.chartInstance.render()
     }
   }

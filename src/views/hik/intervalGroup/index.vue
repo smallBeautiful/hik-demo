@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="padding: 30px;" class="saasas">
     <div id="intervalGroup" />
     <div>
       <el-button :disabled="!prevShow" @click="prevHandle">上一页</el-button>
@@ -34,8 +34,27 @@ export default {
   },
   mounted() {
     this.initData()
+    this.$nextTick(() => {
+      const ele = document.getElementsByClassName('saasas')[0]
+      console.log(ele)
+      // chartInstance.on('mouseleave', ev => {
+      //   console.log(22222222)
+      //   chartInstance.hideTooltip()
+      // })
+      ele.addEventListener('mouseleave', this.hideToolTip())
+      // chartInstance.on('click', ev => {
+      //   console.log(1111111111)
+      // })
+    })
+  },
+  beforeDestroy() {
+    const ele = document.getElementsByClassName('saasas')[0]
+    ele.removeEventListener('mouseleave', this.hideToolTip())
   },
   methods: {
+    hideToolTip() {
+      chartInstance.hideTooltip()
+    },
     prevHandle() {
       this.startIndex--
       this.endIndex--
@@ -108,13 +127,12 @@ export default {
       })
       chartInstance.source(res)
       chartInstance.legend(false)
-      chartInstance.interval().position('name*percent').color('type').size(30)
+      chartInstance.interval().position('name*percent').color('type')
         .adjust([{
           type: 'dodge',
           marginRatio: 0,
           nums: 4
         }])
-
       chartInstance.render()
     },
     init2() {
