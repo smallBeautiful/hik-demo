@@ -176,6 +176,22 @@ export const constantRoutes = [
   },
 
   {
+    path: '/table',
+    component: Layout,
+    redirect: '/element/table',
+    name: 'element',
+    meta: { title: 'table组件', icon: 'el-icon-s-help' },
+    children: [
+      {
+        path: 'table',
+        name: 'table',
+        component: () => import('@/views/table/scroll'),
+        meta: { title: 'scroll', icon: 'table' }
+      }
+    ]
+  },
+
+  {
     path: '/form',
     component: Layout,
     children: [

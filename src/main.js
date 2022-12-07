@@ -8,6 +8,10 @@ import router from './router'
 import './element'
 import '@/icons' // icon
 import '@/permission'
+import 'hb-js-utils'
+import VHBTable from 'vhb-table'
+import 'vhb-table/lib/style.css'
+Vue.use(VHBTable)
 if (process.env.NODE_ENV === 'production') {
   const { mockXHR } = require('../mock')
   mockXHR()
