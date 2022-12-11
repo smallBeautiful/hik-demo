@@ -127,6 +127,7 @@ export default {
       chartInstance.render()
     },
     init2() {
+      console.log('inikkt2')
       const res = arrayGroupBy(this.currentData, 'name')
       chartInstance && chartInstance.destroy()
       chartInstance = new G2.Chart({
