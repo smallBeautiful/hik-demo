@@ -17,7 +17,7 @@ export default {
   },
   methods: {
     init() {
-      for (let i = 0; i < 10000; i++) {
+      for (let i = 0; i < 100000; i++) {
         const obj = { id: i, name: 'Test' + i, role: 'Develop' + i, sex: 'Man' + i, address: 'Shenzhen' + i }
         this.list.push(obj)
       }

@@ -33,18 +33,11 @@ export default {
     }
   },
   mounted() {
+    console.log(111)
     this.initData()
     this.$nextTick(() => {
       const ele = document.getElementsByClassName('saasas')[0]
-      console.log(ele)
-      // chartInstance.on('mouseleave', ev => {
-      //   console.log(22222222)
-      //   chartInstance.hideTooltip()
-      // })
       ele.addEventListener('mouseleave', this.hideToolTip())
-      // chartInstance.on('click', ev => {
-      //   console.log(1111111111)
-      // })
     })
   },
   beforeDestroy() {
@@ -108,11 +101,9 @@ export default {
         data.push(...item)
       })
       this.currentData = data
-      this.init()
+      this.init2()
     },
     init() {
-      // console.log(JSON.parse(JSON.stringify(this.currentData)))
-      // const res = arrayGroupBy(JSON.parse(JSON.stringify(this.currentData)), 'name')
       const res = this.currentData
       chartInstance && chartInstance.destroy()
       chartInstance = new G2.Chart({
@@ -136,7 +127,7 @@ export default {
       chartInstance.render()
     },
     init2() {
-      const res = arrayGroupBy(JSON.parse(JSON.stringify(this.currentData)), 'name')
+      const res = arrayGroupBy(this.currentData, 'name')
       chartInstance && chartInstance.destroy()
       chartInstance = new G2.Chart({
         container: 'intervalGroup',
@@ -149,37 +140,21 @@ export default {
         max: 100
       })
 
-      // const view = chartInstance.view()
-      // view.source(res[0])
-      // view.interval().position('name*percent').color('type').size(30)
-      //   .adjust([{
-      //     type: 'dodge',
-      //     marginRatio: 0
-      //   }])
-
       const view2 = chartInstance.view()
-      view2.source(res[1])
+      view2.source(res[0])
       view2.interval().position('name*percent').color('type').size(30)
         .adjust([{
           type: 'dodge',
           marginRatio: 0
         }])
-      view2.axis('name', false)
 
       const view3 = chartInstance.view()
-      view3.source(res[2])
+      view3.source(res[1])
       view3.interval().position('name*percent').color('type').size(30)
         .adjust([{
           type: 'dodge',
           marginRatio: 0
         }])
-      // chartInstance.source(res[1])
-      // chartInstance.legend(false)
-      // chartInstance.interval().position('name*percent').color('type').size(30)
-      //   .adjust([{
-      //     type: 'dodge',
-      //     marginRatio: -0.92
-      //   }])
 
       chartInstance.render()
     }
