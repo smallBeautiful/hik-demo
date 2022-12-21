@@ -13,6 +13,19 @@ function roundRect (x, y, w, h, r, ctx) {
   ctx.closePath();
 }
 function getData(i) {
+  // 开始的距离小于起始边界
+  if (cs.csLeft + i*csXOneLen + toolTipGap < 0) {
+    const temp =  -(cs.csLeft + i*csXOneLen + toolTipGap) + 10
+    toolTipGap += temp
+  }
+  // 结束的边界大于图形
+  // console.log(_this.width)
+  if (cs.csLeft + i*csXOneLen + toolTipGap + maxWith > _this.width) {
+    const temp =  cs.csLeft + i*csXOneLen + toolTipGap + maxWith - _this.width + 45
+    console.log(temp)
+    toolTipGap -= temp
+  }
+
   var ctx = _this.ctx;
   var csXOneLen = cs.csXOneLen;
   const len = _this.series[0].data.length
@@ -94,3 +107,4 @@ function getData(i) {
 
   }
 }
+

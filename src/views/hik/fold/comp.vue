@@ -264,7 +264,7 @@ export default {
   position: relative;
   box-shadow: 0 2px 12px 0 rgb(0 0 0 / 10%);
   background:#fff;
-  border: 1px solid #fff;
+  border: 1px solid cyan;
   min-width: 50px;
   height: 26px;
   line-height: 26px;
@@ -275,14 +275,47 @@ export default {
   z-index: 3;
 }
 .hik-pop-item {
-  position: absolute;
+  //position: absolute;
+  //top: 20px;
+  //left: 45%;
+  //border-right: 5px solid transparent;
+  //border-bottom: 5px solid transparent;
+  //border-top: 5px solid transparent;
+  //border-left: 5px solid transparent;
+  //width: 10px;
+  //height: 10px;
+  //border-top: 1px solid cyan;
+  //border-left: 1px solid cyan;
+  //transform: rotate(-135deg)
+  //content: '';
+  //border-style: solid;
+  //border-width: 0 40px 40px;
+  //border-color: transparent transparent #96ceb4;
+  //position: absolute;
+  //top: 6px;
+  //left: -40px;
+}
+.hik-pop-item:before {
+  content: '';
   display: block;
-  width: 0;
-  height: 0;
-  top: 22px;
-  left: 45%;
-  border: 6px solid transparent;
-  border-top: 6px solid #fff;
+  position: absolute;
+  top: 25px;
+  left: 44%;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 6px solid cyan;
+  transform: rotate(-180deg)
+}
+.hik-pop-item:after {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 24px;
+  left: 44%;
+  border-left:6px solid transparent;
+  border-right:6px solid transparent;
+  border-bottom:6px solid #fff;
+  transform: rotate(-180deg)
 }
 .g2-tool-tip {
   position: absolute;

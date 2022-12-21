@@ -79,6 +79,12 @@ export const constantRoutes = [
     meta: { title: '组件', icon: 'el-icon-s-help' },
     children: [
       {
+        path: 'font',
+        name: 'font',
+        component: () => import('@/views/hik/font'),
+        meta: { title: 'font', icon: 'table' }
+      },
+      {
         path: 'index',
         name: 'component',
         component: () => import('@/views/hik/component'),
@@ -155,6 +161,22 @@ export const constantRoutes = [
         name: 'scroll2',
         component: () => import('@/views/hik/scroll2/index'),
         meta: { title: '滚动图表2', icon: 'table' }
+      }
+    ]
+  },
+
+  {
+    path: '/js',
+    component: Layout,
+    redirect: '/js/event',
+    name: 'JS',
+    meta: { title: 'JS', icon: 'el-icon-s-help' },
+    children: [
+      {
+        path: 'js',
+        name: 'js',
+        component: () => import('@/views/js/event'),
+        meta: { title: 'js', icon: 'table' }
       }
     ]
   },
