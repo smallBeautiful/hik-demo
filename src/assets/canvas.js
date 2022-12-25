@@ -108,3 +108,24 @@ function getData(i) {
   }
 }
 
+if (maxList.length) {
+  const maxNum = Math.max.apply(null, maxList)
+  console.log(maxNum)
+  const angleStart = cs.csLeft + i*csXOneLen + csXOneLen/2 - 20
+  const angleEnd = angleStart + 15
+  // 三角形 start
+  ctx.beginPath() // 新建一条路径
+  ctx.lineWidth = 1
+  ctx.strokeStyle="cyan";
+  ctx.moveTo(angleStart,maxNum + 17) // 50 50
+  ctx.lineTo(angleEnd,maxNum + 32) // 75 60
+  ctx.lineTo(angleStart + 30, maxNum +17) // 80 50
+  ctx.stroke()
+  ctx.closePath()
+  ctx.beginPath()
+  ctx.strokeStyle="cyan";
+  // ctx.moveTo(angleStart,angleStart)
+  // ctx.lineTo(anglePoint,angleStart)
+  ctx.stroke()
+  ctx.closePath()
+}

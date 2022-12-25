@@ -182,6 +182,22 @@ export const constantRoutes = [
   },
 
   {
+    path: '/canvas',
+    component: Layout,
+    redirect: '/canvas/bezierCurves',
+    name: 'canvas',
+    meta: { title: 'canvas', icon: 'el-icon-s-help' },
+    children: [
+      {
+        path: 'canvas',
+        name: 'canvas',
+        component: () => import('@/views/canvas/bezierCurves'),
+        meta: { title: 'bezierCurves', icon: 'table' }
+      }
+    ]
+  },
+
+  {
     path: '/element',
     component: Layout,
     redirect: '/element/checkbox',
