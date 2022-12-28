@@ -177,6 +177,12 @@ export const constantRoutes = [
         name: 'js',
         component: () => import('@/views/js/event'),
         meta: { title: 'js', icon: 'table' }
+      },
+      {
+        path: 'close',
+        name: 'close',
+        component: () => import('@/views/js/close'),
+        meta: { title: '关闭当前窗口', icon: 'table' }
       }
     ]
   },
