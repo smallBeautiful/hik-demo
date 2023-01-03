@@ -188,6 +188,22 @@ export const constantRoutes = [
   },
 
   {
+    path: '/directive',
+    component: Layout,
+    redirect: '/directive/drag',
+    name: 'directive',
+    meta: { title: 'directive', icon: 'el-icon-s-help' },
+    children: [
+      {
+        path: 'directive',
+        name: 'directive',
+        component: () => import('@/views/directive/drag'),
+        meta: { title: 'drag', icon: 'table' }
+      }
+    ]
+  },
+
+  {
     path: '/canvas',
     component: Layout,
     redirect: '/canvas/bezierCurves',
