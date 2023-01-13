@@ -1,9 +1,9 @@
 import { getData } from '@/api/cache'
-import da from 'element-ui/src/locale/lang/da'
 
 const getDefaultState = () => {
   return {
-    list: []
+    list: [],
+    listStatus: 0 // 0未请求 1请求中 2请求成功
   }
 }
 
@@ -19,12 +19,14 @@ const actions = {
   // 获取数据
   getData({ commit }, data = {}) {
     return new Promise((resolve, reject) => {
+      state.listStatus = 1
       getData().then(response => {
+        this.listStatus = 2
         const { data } = response
-        console.log(data)
         commit('SET_DATA', data)
         resolve()
       }).catch(error => {
+        this.listStatus = 0
         reject(error)
       })
     })

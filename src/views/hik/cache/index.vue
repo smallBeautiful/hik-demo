@@ -1,20 +1,25 @@
 <template>
-  <div class="app-container">cache</div>
+  <div class="app-container">
+    <fetch />
+    {{ list }}
+  </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
+import fetch from '@/views/hik/cache/components/fetch'
 export default {
   name: 'Index',
-  mounted() {
-    this.getList()
+  components: {
+    fetch
   },
-  methods: {
-    getList() {
-      this.$store.dispatch('cache/getData').then(() => {
-        console.log(11111)
-      })
-    }
-  }
+  computed: {
+    ...mapState('cache', ['list'])
+  },
+  mounted() {
+    this.$store.dispatch('cache/getData')
+  },
+  methods: {}
 }
 </script>
 
