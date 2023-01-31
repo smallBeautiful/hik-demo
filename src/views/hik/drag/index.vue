@@ -1,26 +1,18 @@
 <template>
   <div>
-    <transition-group
-      name="drag"
-      class="list"
-      tag="ul"
-    >
-      <li
-        v-for="(item, index) in list"
-        :key="item.label"
-        draggable
-        class="list-item"
-        @dragenter="dragenter($event, index)"
-        @dragover="dragover($event, index)"
-        @dragstart="dragstart(index)"
-      >
+    <draggable v-model="list" :animation="300" @end="end">
+      <div v-for="(item, index) in list" v-if="index > 0" :key="index">
         {{ item.label }}
-      </li>
-    </transition-group>
+      </div>
+    </draggable>
   </div>
 </template>
 <script>
+import draggable from 'vuedraggable'
 export default {
+  components: {
+    draggable
+  },
   data() {
     return {
       list: [
@@ -30,28 +22,12 @@ export default {
         { label: '列表4' },
         { label: '列表5' },
         { label: '列表6' }
-      ],
-      dragIndex: '',
-      enterIndex: ''
+      ]
     }
   },
   methods: {
-    dragstart(index) {
-      this.dragIndex = index
-    },
-    dragenter(e, index) {
-      e.preventDefault()
-      // 避免源对象触发自身的dragenter事件
-      if (this.dragIndex !== index) {
-        const moving = this.list[this.dragIndex]
-        this.list.splice(this.dragIndex, 1)
-        this.list.splice(index, 0, moving)
-        // 排序变化后目标对象的索引变成源对象的索引
-        this.dragIndex = index
-      }
-    },
-    dragover(e, index) {
-      e.preventDefault()
+    end() {
+      console.log(this.list)
     }
   }
 }
@@ -68,7 +44,7 @@ export default {
     background: #EA6E59;
     border-radius: 4px;
     color: #FFF;
-    margin-bottom: 6px;
+    margin: 10px 0;
     height: 50px;
     line-height: 50px;
     text-align: center;
