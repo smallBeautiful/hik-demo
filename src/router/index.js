@@ -194,6 +194,22 @@ export const constantRoutes = [
   },
 
   {
+    path: '/table',
+    component: Layout,
+    redirect: '/table/backTop',
+    name: 'table',
+    meta: { title: 'JS', icon: 'el-icon-s-help' },
+    children: [
+      {
+        path: '/backTop',
+        name: 'backTop',
+        component: () => import('@/views/table'),
+        meta: { title: 'table', icon: 'table' }
+      }
+    ]
+  },
+
+  {
     path: '/directive',
     component: Layout,
     redirect: '/directive/drag',
@@ -240,22 +256,22 @@ export const constantRoutes = [
       }
     ]
   },
-
-  {
-    path: '/table',
-    component: Layout,
-    redirect: '/element/table',
-    name: 'element',
-    meta: { title: 'table组件', icon: 'el-icon-s-help' },
-    children: [
-      {
-        path: 'table',
-        name: 'table',
-        component: () => import('@/views/table/scroll'),
-        meta: { title: 'scroll', icon: 'table' }
-      }
-    ]
-  },
+  //
+  // {
+  //   path: '/table',
+  //   component: Layout,
+  //   redirect: '/element/table',
+  //   name: 'element',
+  //   meta: { title: 'table组件', icon: 'el-icon-s-help' },
+  //   children: [
+  //     {
+  //       path: 'table',
+  //       name: 'table',
+  //       component: () => import('@/views/table/scroll'),
+  //       meta: { title: 'scroll', icon: 'table' }
+  //     }
+  //   ]
+  // },
 
   {
     path: '/form',

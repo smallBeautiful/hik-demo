@@ -7,6 +7,7 @@
       border
       fit
       highlight-current-row
+      height="600px"
     >
       <el-table-column align="center" label="ID" width="95">
         <template slot-scope="scope">
@@ -40,11 +41,13 @@
         </template>
       </el-table-column>
     </el-table>
+    <Pagination :page="page" :total="total" @pagination="pagination" />
   </div>
 </template>
 
 <script>
 import { getList } from '@/api/table'
+import Pagination from '@/components/Pagination'
 
 export default {
   filters: {
@@ -57,22 +60,34 @@ export default {
       return statusMap[status]
     }
   },
+  components: {
+    Pagination
+  },
   data() {
     return {
       list: null,
-      listLoading: true
+      listLoading: true,
+      total: 0,
+      page: 1
     }
   },
   created() {
     this.fetchData()
   },
   methods: {
+    pagination(page, limit) {
+      console.log(page, limit)
+      this.fetchData()
+    },
     fetchData() {
       this.listLoading = true
-      getList().then(response => {
-        this.list = response.data.items
-        this.listLoading = false
-      })
+      setTimeout(() => {
+        getList().then(response => {
+          this.list = response.data.items
+          this.total = response.data.total
+          this.listLoading = false
+        })
+      }, 1000)
     }
   }
 }
