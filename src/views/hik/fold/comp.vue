@@ -1,7 +1,7 @@
 <template>
   <div class="chart">
     <div class="legend">
-      <span v-for="(item, index) in legendList" :key="index" class="contain" @click="mouseenter(index)"><i class="contain" :style="{backgroundColor:colorList[index]}" />{{ item.name }}</span>
+      <span v-for="(item, index) in legendList" :key="index" class="contain" @mouseleave="mouseleave" @mouseenter="mouseenter(index)"><i class="contain" :style="{backgroundColor:colorList[index]}" />{{ item.name }}</span>
     </div>
     <div :id="charts.id" />
   </div>
@@ -63,11 +63,11 @@ export default {
     }
   },
   mounted() {
-    on(document, 'click', this.test)
+    // on(document, 'click', this.test)
     this.init()
   },
   beforeDestroy() {
-    off(document, 'click', this.test)
+    // off(document, 'click', this.test)
   },
   methods: {
     test(e) {
@@ -178,8 +178,9 @@ export default {
       this.chartInstance = new G2.Chart({
         container: _this.charts.id,
         forceFit: true,
-        height: 120,
-        animate: false
+        height: 420,
+        animate: false,
+        padding: [100, 100, 100, 100]
       })
       this.chartInstance.scale(_this.name, {
         range: [0.05, 0.9]
@@ -218,6 +219,14 @@ export default {
                 <div class="title">${title}</div>
                 ${str}
               <div/>`
+        },
+        crosshairs: {
+          style: {
+            fillOpacity: 1,
+            fill: '#000',
+            lineWidth: 1,
+            height: 40
+          }
         }
       })
       this.chartInstance.intervalStack().position(`${_this.name}*比例`).color(_this.key, _this.colorList).size(50)
