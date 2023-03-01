@@ -222,10 +222,12 @@ export default {
         },
         crosshairs: {
           style: {
-            fillOpacity: 1,
-            fill: '#000',
-            lineWidth: 1,
-            height: 40
+            // fill: 'r(0.6, 1, 0.5) 0:#1890ff 1:#ffffff',
+            // fill: 'l(0) 0:#3e5bdb 1:#dd3121',
+            // fill: 'l(0) 0:#ffffff 0.5:#7ec2f3 1:#1890ff',
+            fill: 'l(270) 0:#ffffff 0.5:#000000 1:#ffffff',
+            // fill: 'p(a)https://gw.alipayobjects.com/mdn/rms_d314dd/afts/img/A*58XjQY1tO7gAAAAAAAAAAABkARQnAQ',
+            fillOpacity: 0.3
           }
         }
       })
