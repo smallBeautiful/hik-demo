@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="text/javascript" src="./z-chart.v2.js"></script>
+    <title>图表2.0</title>
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .ZchartBox {
+            margin: 20px;
+            clear: both;
+        }
+
+        .ZchartBox .item {
+            float: left;
+            margin: 0.5%;
+            box-shadow: 0 0 18px -5px #ddd;
+        }
+
+        .ZchartBox .item canvas {
+            width: 100%;
+            height: 100%;
+        }
+        @media only screen and (max-width: 419px) {
+            .ZchartBox .item{width: 98%;height: 98%;}
+        }
+        @media only screen and (min-width: 420px) and (max-width: 1600px) {
+            .ZchartBox .item{width: 44%;height: 44%;}
+        }
+        @media only screen and (min-width: 1601px) {
+            .ZchartBox .item{width: 32.3%;height: 32.3%;}
+        }
+    </style>
+</head>
+<body>
+    <div class="ZchartBox">
+        <div class="item" id="noTagBarChart"></div>
+    </div>
+    <script>
+        // 折线图与柱状图
+        var lineChartOption = {
+            title: "一周销售额报表",
+            type:"verticle",
+            xAxis: {
+                tag:"周",
+                data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+            },
+            yAxis: {
+                tofixed:0,
+                type: 'value',
+                tag:"元",
+            },
+            series: [{
+                name: '邮件营销',
+                data: [820, 932, 901, 934, 1290, 1330],
+                type: 'area',//line or area
+            }, {
+                name: '联盟广告',
+                data: [0, 1032, 1001, 1034, 1390, 1430],
+                type: 'area',
+            }, {
+                name: '视频广告',
+                data: [0, 832, 800, 864, 1090, 1000],
+                type: 'area',
+            }],
+            callback(i){console.log(i)}
+        };
+        var noTagBarChart=new barChart("noTagBarChart", lineChartOption);
+        lineChartOption.series.map(item=>{
+            item.tag="111";
+        })
+
+    </script>
+</body>
+</html>
