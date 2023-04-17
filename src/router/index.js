@@ -79,6 +79,12 @@ export const constantRoutes = [
     meta: { title: '组件', icon: 'el-icon-s-help' },
     children: [
       {
+        path: 'form',
+        name: 'form',
+        component: () => import('@/views/hik/form'),
+        meta: { title: 'form', icon: 'table' }
+      },
+      {
         path: 'font',
         name: 'font',
         component: () => import('@/views/hik/font'),
@@ -172,6 +178,38 @@ export const constantRoutes = [
   },
 
   {
+    path: '/rule',
+    component: Layout,
+    redirect: '/rules/checkOne',
+    name: 'rule',
+    meta: { title: '表单校验', icon: 'el-icon-s-help' },
+    children: [
+      {
+        path: 'checkOne',
+        name: 'checkOne',
+        component: () => import('@/views/rules/checkOne'),
+        meta: { title: 'oneMust', icon: 'table' }
+      }
+    ]
+  },
+
+  {
+    path: '/draggable',
+    component: Layout,
+    redirect: '/draggable/grid',
+    name: 'draggable',
+    meta: { title: '宫格', icon: 'el-icon-s-help' },
+    children: [
+      {
+        path: 'grid',
+        name: 'grid',
+        component: () => import('@/views/draggable/grid'),
+        meta: { title: 'grid', icon: 'table' }
+      }
+    ]
+  },
+
+  {
     path: '/js',
     component: Layout,
     redirect: '/js/event',
@@ -205,6 +243,12 @@ export const constantRoutes = [
         name: 'backTop',
         component: () => import('@/views/table'),
         meta: { title: 'table', icon: 'table' }
+      },
+      {
+        path: '/dyTable',
+        name: 'dyTable',
+        component: () => import('@/views/table/dyTable'),
+        meta: { title: '动态table', icon: 'table' }
       }
     ]
   },
