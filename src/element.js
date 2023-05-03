@@ -41,7 +41,8 @@ import {
   Loading,
   MessageBox,
   Message,
-  Notification
+  Notification,
+  Option
 } from 'element-ui'
 
 Vue.use(Pagination)
@@ -82,4 +83,5 @@ Vue.use(Progress)
 Vue.use(Card)
 Vue.use(Container)
 Vue.use(Scrollbar)
+Vue.use(Option)
 Vue.use(Loading.directive)

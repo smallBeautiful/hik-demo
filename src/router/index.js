@@ -297,6 +297,12 @@ export const constantRoutes = [
         name: 'checkbox',
         component: () => import('@/views/element/checkbox-disabled'),
         meta: { title: 'checkbox', icon: 'table' }
+      },
+      {
+        path: 'select',
+        name: 'select',
+        component: () => import('@/views/element/select'),
+        meta: { title: 'select', icon: 'table' }
       }
     ]
   },
