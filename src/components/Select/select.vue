@@ -37,7 +37,6 @@
         <el-tag
           v-for="item in selected"
           :key="getValueKey(item)"
-          :closable="!selectDisabled"
           :size="collapseTagSize"
           :hit="item.hitState"
           type="info"
@@ -45,6 +44,7 @@
           @close="deleteTag($event, item)"
         >
           <span class="el-select__tags-text">{{ item.currentLabel }}</span>
+          <span :class="item.icon" />
         </el-tag>
       </transition-group>
 

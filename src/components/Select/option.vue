@@ -12,6 +12,7 @@
   >
     <slot>
       <span>{{ currentLabel }}</span>
+      <span :class="icon" />
     </slot>
   </li>
 </template>
@@ -38,6 +39,10 @@ export default {
     disabled: {
       type: Boolean,
       default: false
+    },
+    icon: {
+      type: String,
+      default: ''
     }
   },
 
