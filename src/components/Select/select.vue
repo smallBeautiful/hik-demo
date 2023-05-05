@@ -11,42 +11,25 @@
       class="el-select__tags"
       :style="{ 'max-width': inputWidth - 32 + 'px', width: '100%' }"
     >
-      潜力:
-      <span v-if="collapseTags && selected.length">
-        <el-tag
-          :closable="!selectDisabled"
-          :size="collapseTagSize"
-          :hit="selected[0].hitState"
-          type="info"
-          disable-transitions
-          @close="deleteTag($event, selected[0])"
-        >
-          <span class="el-select__tags-text">{{ selected[0].currentLabel }}</span>
-        </el-tag>
-        <el-tag
-          v-if="selected.length > 1"
-          :closable="false"
-          :size="collapseTagSize"
-          type="info"
-          disable-transitions
-        >
-          <span class="el-select__tags-text">+ {{ selected.length - 1 }}</span>
-        </el-tag>
-      </span>
-      <transition-group v-if="!collapseTags" @after-leave="resetInputHeight">
-        <el-tag
-          v-for="item in selected"
-          :key="getValueKey(item)"
-          :size="collapseTagSize"
-          :hit="item.hitState"
-          type="info"
-          disable-transitions
-          @close="deleteTag($event, item)"
-        >
-          <span class="el-select__tags-text">{{ item.currentLabel }}</span>
-          <span :class="item.icon" />
-        </el-tag>
-      </transition-group>
+      <div class="wrapper-float-bfc">
+        <div class="left">潜力:</div>
+        <div class="right">
+          <transition-group v-if="!collapseTags" @after-leave="resetInputHeight">
+            <el-tag
+              v-for="item in selected"
+              :key="getValueKey(item)"
+              :size="collapseTagSize"
+              :hit="item.hitState"
+              type="info"
+              disable-transitions
+              @close="deleteTag($event, item)"
+            >
+              <span class="el-select__tags-text">{{ item.currentLabel }}</span>
+              <span :class="item.icon" />
+            </el-tag>
+          </transition-group>
+        </div>
+      </div>
 
       <input
         v-if="filterable"
@@ -79,7 +62,6 @@
       ref="reference"
       v-model="selectedLabel"
       type="text"
-      :placeholder="currentPlaceholder"
       :name="name"
       :autocomplete="autoComplete || autocomplete"
       :size="selectSize"
@@ -899,3 +881,20 @@ export default {
   }
 }
 </script>
+<style scoped lang="scss">
+.wrapper-float-bfc {
+  overflow: auto;
+  width: 300px;
+}
+}
+
+.wrapper-float-bfc .left {
+  float: left;
+  margin-right: 6px;
+}
+
+.wrapper-float-bfc .right {
+  margin-left: 0;
+  overflow: auto;
+}
+</style>

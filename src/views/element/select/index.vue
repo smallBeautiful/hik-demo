@@ -1,6 +1,5 @@
 <template>
   <div>
-    {{ value }}
     <select-custom v-model="value" size="mini" multiple>
       <m-option
         v-for="item in options"
