@@ -173,6 +173,18 @@ export const constantRoutes = [
         name: 'sort',
         component: () => import('@/views/hik/sort'),
         meta: { title: 'sort', icon: 'table' }
+      },
+      {
+        path: 'winname',
+        name: 'winname',
+        component: () => import('@/views/hik/winname'),
+        meta: { title: 'winname', icon: 'table' }
+      },
+      {
+        path: 'winname2',
+        name: 'winname2',
+        component: () => import('@/views/hik/winname2'),
+        meta: { title: 'winname2', icon: 'table' }
       }
     ]
   },
@@ -303,6 +315,12 @@ export const constantRoutes = [
         name: 'select',
         component: () => import('@/views/element/select'),
         meta: { title: 'select', icon: 'table' }
+      },
+      {
+        path: 'tree',
+        name: 'tree',
+        component: () => import('@/views/element/tree'),
+        meta: { title: 'tree', icon: 'tree' }
       }
     ]
   },

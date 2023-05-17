@@ -1,70 +1,90 @@
 <template>
-  <div class="app-container">
-    <div v-for="(item, index) in users" :key="index" class="box">
-      <div v-for="(item2, index2) in item" :key="index2" class="item">
-        <draggable class="list-group" :list="item2" group="people" @change="log">
-          <div
-            v-for="element in item2"
-            :key="element.id"
-            class="list-group-item"
-          >
-            {{ element.name }}
-          </div>
-        </draggable>
-      </div>
+  <div class="grid-container">
+    <div
+      v-for="(cell, index) in grid"
+      :key="index"
+      class="grid-cell"
+      :style="cell.style"
+      draggable
+      @dragstart="onDragStart(index)"
+      @dragend="onDragEnd"
+    >
+      {{ index + 1 }}
     </div>
-    <index2 />
   </div>
 </template>
+
 <script>
-import { chunk } from 'lodash'
-import draggable from 'vuedraggable'
-import index2 from '@/views/draggable/grid/index2.vue'
 export default {
-  name: 'Index',
-  components: {
-    draggable,
-    index2
-  },
   data() {
     return {
-      list: [
-        [{ id: 1, name: 'hello1' }, { id: 11, name: 'hello11' }],
-        [{ id: 2, name: 'hello2' }],
-        [{ id: 3, name: 'hello3' }],
-        [{ id: 4, name: 'hello4' }],
-        [{ id: 5, name: 'hello15' }],
-        [{ id: 6, name: 'hello16' }],
-        [{ id: 7, name: 'hello17' }],
-        [{ id: 8, name: 'hello18' }],
-        [{ id: 9, name: 'hello19' }]
+      grid: [
+        { width: 100, height: 100, style: {}},
+        { width: 100, height: 100, style: {}},
+        { width: 100, height: 100, style: {}},
+        { width: 100, height: 100, style: {}},
+        { width: 100, height: 100, style: {}},
+        { width: 100, height: 100, style: {}},
+        { width: 100, height: 100, style: {}},
+        { width: 100, height: 100, style: {}},
+        { width: 100, height: 100, style: {}}
       ],
-      users: []
+      draggingIndex: null
     }
   },
   mounted() {
-    this.users = chunk(this.list, 3)
+    const container = document.querySelector('.grid-container')
+
+    const handleDragOver = (e) => {
+      e.preventDefault()
+    }
+
+    const handleDrop = (e) => {
+      e.preventDefault()
+
+      const dropIndex = parseInt(e.target.dataset.index)
+      if (dropIndex !== this.draggingIndex) {
+        const temp = { ...this.grid[dropIndex] }
+        this.grid[dropIndex] = { ...this.grid[this.draggingIndex] }
+        this.grid[this.draggingIndex] = temp
+      }
+    }
+
+    container.addEventListener('dragover', handleDragOver)
+    container.addEventListener('drop', handleDrop)
+
+    this.$once('hook:beforeDestroy', () => {
+      container.removeEventListener('dragover', handleDragOver)
+      container.removeEventListener('drop', handleDrop)
+    })
   },
   methods: {
-    log() {
-      console.log(JSON.parse(JSON.stringify(this.users)))
+    onDragStart(index) {
+      this.draggingIndex = index
+    },
+    onDragEnd() {
+      this.draggingIndex = null
     }
   }
 }
 </script>
 
-<style scoped lang="scss">
-.box {
+<style scoped>
+.grid-container {
   display: flex;
-  justify-content: space-around;
-  .item {
-    height: 200px;
-    width: 30%;
-    background: orange;
-    margin: 10px;
-    border-radius: 6px;
-    padding: 10px;
-    color: #fff;
-  }
+  flex-wrap: wrap;
+  width: 300px;
+  height: 300px;
+  border: 1px solid #ccc;
+  overflow: hidden;
+}
+
+.grid-cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #ccc;
+  background-color: #f0f0f0;
+  cursor: grab;
 }
 </style>

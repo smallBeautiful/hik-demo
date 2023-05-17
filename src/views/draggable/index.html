@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    .resizable {
+      width: 200px;
+      height: 200px;
+      background-color: #f0f0f0;
+      resize: horizontal;
+      overflow: auto;
+    }
+  </style>
+</head>
+<body>
+<div class="resizable" id="resizable" onmousedown="startResize(event)">
+  <!-- 布局内容 -->
+</div>
+
+<script>
+  function startResize(event) {
+    event.preventDefault();
+
+    const element = document.getElementById('resizable');
+    const initialWidth = element.offsetWidth;
+    const startX = event.clientX;
+
+    document.onmousemove = function(event) {
+      const diffX = event.clientX - startX;
+      const newWidth = initialWidth + diffX;
+
+      element.style.width = newWidth + 'px';
+    };
+
+    document.onmouseup = function() {
+      document.onmousemove = null;
+      document.onmouseup = null;
+    };
+  }
+</script>
+</body>
+</html>

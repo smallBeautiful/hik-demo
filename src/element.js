@@ -42,6 +42,7 @@ import {
   MessageBox,
   Message,
   Notification,
+  Cascader,
   Option
 } from 'element-ui'
 
@@ -84,4 +85,5 @@ Vue.use(Card)
 Vue.use(Container)
 Vue.use(Scrollbar)
 Vue.use(Option)
+Vue.use(Cascader)
 Vue.use(Loading.directive)

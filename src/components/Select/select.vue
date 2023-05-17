@@ -886,7 +886,6 @@ export default {
   overflow: auto;
   width: 300px;
 }
-}
 
 .wrapper-float-bfc .left {
   float: left;
