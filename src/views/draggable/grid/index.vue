@@ -1,6 +1,5 @@
 <template>
   <div class="flex-container grid-container">
-    {{ clientHeight }}
     <div class="grid left">
       <div v-for="(gridRow, index) in grid" :key="index" class="grid-row">
         <div v-for="(block, blockIndex) in gridRow" :key="blockIndex" class="grid-item">
@@ -12,6 +11,7 @@
                 class="draggable"
                 :group="{ name: 'people' }"
                 ghost-class="ghost"
+                @end="end"
               >
                 <el-popover
                   v-for="(user) in block.list"
@@ -38,6 +38,9 @@
     </div>
     <div class="right">
       <right />
+      <el-button :loading="isLoading" :disabled="isLoading">
+        {{ text }}
+      </el-button>
     </div>
   </div>
 </template>
@@ -124,22 +127,63 @@ export default {
         ]
       ],
       draggingIndex: null,
-      clientHeight: 0
+      clientHeight: 0,
+      startTime: new Date(), // 时间对比
+      isSave: false, // 是否需要保存
+      timer: undefined,
+      text: '保存',
+      isLoading: false
     }
   },
   mounted() {
     this._resize(this)
+    this._observer()
     window.addEventListener('resize', this._resize.bind(null, this))
   },
   beforeDestroy() {
     window.removeEventListener('resize', this._resize)
+    clearInterval(this.timer)
   },
   methods: {
+    /**
+     * 自动保存
+     * isChange: false 标记是否需要保存
+     * 拖拽，或者校准
+     * */
+    autoSave() {
+      console.log('autoSave')
+      this.isSave = false
+      setTimeout(() => {
+        this.isLoading = false
+        this.startTime = new Date()
+      }, 3000)
+    },
+    _observer() {
+      if (!this.timer) {
+        this.timer = setInterval(() => {
+          if (!this.isSave) {
+            console.log('fail')
+            return
+          }
+          const timeDiff = parseInt((new Date() - this.startTime) / 1000)
+          if (timeDiff > 10) {
+            console.log('save')
+            this.autoSave()
+          } else {
+            console.log('waiting--------------------')
+          }
+        }, 1000)
+      }
+    },
     _resize: throttle((_this) => {
       _this.$nextTick(() => {
         _this.clientHeight = getClientHeight(document.getElementsByClassName('grid-item')[0])
       })
     }, 16),
+    end() {
+      this.isSave = true
+      console.log('end')
+    },
     closeDropdown() {
       this.grid.forEach(item => {
         item.forEach(list => {
@@ -204,6 +248,9 @@ export default {
 .grid-container {
   .el-scrollbar__wrap {
     overflow-x: hidden;
+  }
+  .el-scrollbar__view {
+    height: 100%;
   }
 }
 </style>
