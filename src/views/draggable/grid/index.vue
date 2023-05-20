@@ -1,90 +1,210 @@
 <template>
-  <div class="grid-container">
-    <div
-      v-for="(cell, index) in grid"
-      :key="index"
-      class="grid-cell"
-      :style="cell.style"
-      draggable
-      @dragstart="onDragStart(index)"
-      @dragend="onDragEnd"
-    >
-      {{ index + 1 }}
+  <div class="flex-container grid-container">
+    {{ clientHeight }}
+    <div class="grid left">
+      <div v-for="(gridRow, index) in grid" :key="index" class="grid-row">
+        <div v-for="(block, blockIndex) in gridRow" :key="blockIndex" class="grid-item">
+          <div :style="{ height: clientHeight + 'px' }">
+            <el-scrollbar style="height: 100%;">
+              <draggable
+                v-model="block.list"
+                v-clickoutside="closeDropdown"
+                class="draggable"
+                :group="{ name: 'people' }"
+                ghost-class="ghost"
+              >
+                <el-popover
+                  v-for="(user) in block.list"
+                  :key="user.id"
+                  v-model="user.visible"
+                  trigger="manual"
+                  placement="top"
+                  width="160"
+                >
+                  <div>hello</div>
+                  <span slot="reference">
+                    <span class="user">
+                      <span @click="go">{{ user.name }}</span>
+                      <span style="margin-left: 10px" @click="popoverHandle(user)">{{ user.id }}</span>
+                    </span>
+                  </span>
+                </el-popover>
+              </draggable>
+            </el-scrollbar>
+          </div>
+          <happy-scroll v-if="false" />
+        </div>
+      </div>
+    </div>
+    <div class="right">
+      <right />
     </div>
   </div>
 </template>
 
 <script>
+import draggable from 'vuedraggable'
+import right from '@/views/draggable/grid/components/right.vue'
+import clickoutside from '@/utils/directives/clickoutside'
+import { HappyScroll } from 'vue-happy-scroll'
+// 引入css，推荐将css放入main入口中引入一次即可。
+import 'vue-happy-scroll/docs/happy-scroll.css'
+import { getClientHeight } from '@/utils/directives/dom'
+import { throttle } from 'lodash'
+
 export default {
+  components: {
+    draggable, right, HappyScroll
+  },
+  directives: {
+    clickoutside
+  },
   data() {
     return {
+      visible: true,
+      height: 200,
       grid: [
-        { width: 100, height: 100, style: {}},
-        { width: 100, height: 100, style: {}},
-        { width: 100, height: 100, style: {}},
-        { width: 100, height: 100, style: {}},
-        { width: 100, height: 100, style: {}},
-        { width: 100, height: 100, style: {}},
-        { width: 100, height: 100, style: {}},
-        { width: 100, height: 100, style: {}},
-        { width: 100, height: 100, style: {}}
+        [
+          { id: 101, list: [{ name: '张伟', id: '1', visible: false }, { name: '王芳', id: '2', visible: false }, { name: 'Joseph', id: 36 },
+            { name: 'Grace', id: 37 },
+            { name: 'David', id: 38 },
+            { name: 'Chloe', id: 39 },
+            { name: 'Samuel', id: 40 },
+            { name: 'Swift Lion', id: 963 },
+            { name: 'Calm Wolf', id: 964 },
+            { name: 'Lucky Phoenix', id: 965 },
+            { name: 'Bright Phoenix', id: 966 },
+            { name: 'Brave Bear', id: 967 },
+            { name: 'Swift Phoenix', id: 968 },
+            { name: 'Great Falcon', id: 969 },
+            { name: 'Wise Bear', id: 970 },
+            { name: 'Bright Tiger', id: 971 },
+            { name: 'Swift Falcon', id: 972 },
+            { name: 'Wise Eagle', id: 973 },
+            { name: 'Swift Wolf', id: 974 },
+            { name: 'Kind Eagle', id: 975 },
+            { name: 'Swift Panther', id: 976 },
+            { name: 'Great Eagle', id: 977 },
+            { name: 'Calm Bear', id: 978 },
+            { name: 'Brave Eagle', id: 979 },
+            { name: 'Swift Panther', id: 980 },
+            { name: 'Brave Phoenix', id: 981 },
+            { name: 'Calm Bear', id: 982 },
+            { name: 'Lucky Tiger', id: 983 },
+            { name: 'Happy Bear', id: 984 },
+            { name: 'Brave Wolf', id: 985 },
+            { name: 'Great Bear', id: 986 },
+            { name: 'Swift Tiger', id: 987 },
+            { name: 'Gentle Eagle', id: 988 },
+            { name: 'Wise Eagle', id: 989 },
+            { name: 'Bright Falcon', id: 990 },
+            { name: 'Gentle Falcon', id: 991 },
+            { name: 'Lucky Eagle', id: 992 },
+            { name: 'Lucky Lion', id: 993 },
+            { name: 'Calm Bear', id: 994 },
+            { name: 'Kind Wolf', id: 995 },
+            { name: 'Gentle Bear', id: 996 },
+            { name: 'Bright Falcon', id: 997 },
+            { name: 'Swift Tiger', id: 998 },
+            { name: 'Bright Falcon', id: 999 },
+            { name: 'Wise Falcon', id: 1000 },
+            { name: 'Jack', id: 50 }] },
+          { id: 102, list: [{ name: '陈秀英', id: '5', visible: false }] },
+          { id: 103, list: [] }
+        ],
+        [
+          { id: 201, list: [] },
+          { id: 202, list: [] },
+          { id: 203, list: [] }
+        ],
+        [
+          { id: 301, list: [] },
+          { id: 302, list: [{ name: '周磊', id: '7', visible: false }] },
+          { id: 303, list: [{ name: '沈强', id: '10', visible: false }] }
+        ]
       ],
-      draggingIndex: null
+      draggingIndex: null,
+      clientHeight: 0
     }
   },
   mounted() {
-    const container = document.querySelector('.grid-container')
-
-    const handleDragOver = (e) => {
-      e.preventDefault()
-    }
-
-    const handleDrop = (e) => {
-      e.preventDefault()
-
-      const dropIndex = parseInt(e.target.dataset.index)
-      if (dropIndex !== this.draggingIndex) {
-        const temp = { ...this.grid[dropIndex] }
-        this.grid[dropIndex] = { ...this.grid[this.draggingIndex] }
-        this.grid[this.draggingIndex] = temp
-      }
-    }
-
-    container.addEventListener('dragover', handleDragOver)
-    container.addEventListener('drop', handleDrop)
-
-    this.$once('hook:beforeDestroy', () => {
-      container.removeEventListener('dragover', handleDragOver)
-      container.removeEventListener('drop', handleDrop)
-    })
+    this._resize(this)
+    window.addEventListener('resize', this._resize.bind(null, this))
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', this._resize)
   },
   methods: {
-    onDragStart(index) {
-      this.draggingIndex = index
+    _resize: throttle((_this) => {
+      _this.$nextTick(() => {
+        _this.clientHeight = getClientHeight(document.getElementsByClassName('grid-item')[0])
+      })
+    }, 16),
+    closeDropdown() {
+      this.grid.forEach(item => {
+        item.forEach(list => {
+          // eslint-disable-next-line no-return-assign
+          list.list.forEach(user => user.visible = false)
+        })
+      })
     },
-    onDragEnd() {
-      this.draggingIndex = null
+    popoverHandle(item) {
+      item.visible = !item.visible
+    },
+    go() {
+      window.open('https://www.bilibili.com', '_blank')
     }
   }
 }
 </script>
 
-<style scoped>
-.grid-container {
-  display: flex;
-  flex-wrap: wrap;
-  width: 300px;
-  height: 300px;
-  border: 1px solid #ccc;
-  overflow: hidden;
+<style scoped lang="scss">
+.left {
+  width: 79%;
 }
-
-.grid-cell {
+.right {
+  width: 20%;
+}
+.grid {
+  height: calc(100vh - 70px);
+}
+.grid-row {
+  width: 100%;
+  height: 33%;
+  flex: auto;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  border: 1px solid #ccc;
-  background-color: #f0f0f0;
-  cursor: grab;
+  justify-content: space-around;
+  .grid-item {
+    background: orange;
+    width: 100%;
+    .user {
+      display: inline-block;
+      background: #FFFFFF;
+      margin: 4px;
+      padding: 5px;
+      border-radius: 4px;
+      color: cyan;
+      cursor: pointer;
+    }
+  }
+}
+.grid-row + .grid-row {
+  margin-top: 10px;
+}
+.grid-item {
+  margin-right: 10px;
+}
+.draggable {
+  padding-top: 30px;
+  width: 100%;
+  height: 100%;
 }
 </style>
+<style lang="scss">
+.grid-container {
+  .el-scrollbar__wrap {
+    overflow-x: hidden;
+  }
+}
+</style>
+
