@@ -3,11 +3,12 @@
     <div class="grid left">
       <div v-for="(gridRow, index) in grid" :key="index" class="grid-row">
         <div v-for="(block, blockIndex) in gridRow" :key="blockIndex" class="grid-item">
-          <div :style="{ height: clientHeight + 'px' }">
-            <el-scrollbar style="height: 100%;">
+          <div>
+            <el-scrollbar :style="{ height: clientHeight + 'px' }">
               <draggable
                 v-model="block.list"
                 v-clickoutside="closeDropdown"
+                :style="{ height: clientHeight + 'px' }"
                 class="draggable"
                 :group="{ name: 'people' }"
                 ghost-class="ghost"
@@ -38,9 +39,9 @@
     </div>
     <div class="right">
       <right />
-      <el-button :loading="isLoading" :disabled="isLoading">
-        {{ text }}
-      </el-button>
+      <!--      <el-button :loading="isLoading" :disabled="isLoading">-->
+      <!--        {{ text }}-->
+      <!--      </el-button>-->
     </div>
   </div>
 </template>
@@ -162,7 +163,7 @@ export default {
       if (!this.timer) {
         this.timer = setInterval(() => {
           if (!this.isSave) {
-            console.log('fail')
+            // console.log('fail')
             return
           }
           const timeDiff = parseInt((new Date() - this.startTime) / 1000)
@@ -176,13 +177,22 @@ export default {
       }
     },
     _resize: throttle((_this) => {
+      console.log('resize')
       _this.$nextTick(() => {
         _this.clientHeight = getClientHeight(document.getElementsByClassName('grid-item')[0])
       })
     }, 16),
     end() {
       this.isSave = true
-      console.log('end')
+      setTimeout(() => {
+        this.dispatchResize()
+      }, 1000)
+    },
+    dispatchResize() {
+      // 创建一个自定义的 resize.js 事件
+      const resizeEvent = new Event('resize')
+      // 派发 resize.js 事件
+      window.dispatchEvent(resizeEvent)
     },
     closeDropdown() {
       this.grid.forEach(item => {
@@ -210,7 +220,7 @@ export default {
   width: 20%;
 }
 .grid {
-  height: calc(100vh - 70px);
+  height: 100%;
 }
 .grid-row {
   width: 100%;
@@ -239,18 +249,18 @@ export default {
   margin-right: 10px;
 }
 .draggable {
-  padding-top: 30px;
   width: 100%;
   height: 100%;
 }
 </style>
 <style lang="scss">
 .grid-container {
+  height: calc(100vh - 50px);
   .el-scrollbar__wrap {
     overflow-x: hidden;
   }
   .el-scrollbar__view {
-    height: 100%;
+    min-height: 100%;
   }
 }
 </style>
