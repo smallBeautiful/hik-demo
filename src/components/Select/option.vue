@@ -1,5 +1,6 @@
 <template>
   <li
+    v-if="!disabledOptions"
     v-show="visible"
     class="el-select-dropdown__item"
     :class="{
@@ -43,6 +44,10 @@ export default {
     icon: {
       type: String,
       default: ''
+    },
+    dis: {
+      type: String,
+      default: ''
     }
   },
 
@@ -57,6 +62,9 @@ export default {
   },
 
   computed: {
+    disabledOptions() {
+      return this.dis === this.value
+    },
     isObject() {
       return Object.prototype.toString.call(this.value).toLowerCase() === '[object object]'
     },

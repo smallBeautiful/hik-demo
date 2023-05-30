@@ -1,8 +1,9 @@
 <template>
   <div>
-    <select-custom v-model="value" size="mini" multiple>
+    <select-custom v-model="value" size="mini">
       <m-option
         v-for="item in options"
+        :dis="'选项3'"
         :key="item.value"
         :icon="item.icon"
         :label="item.label"
@@ -28,7 +29,7 @@ export default {
         { value: '选项2', label: '中', icon: 'el-icon-back' },
         { value: '选项3', label: '低', icon: 'el-icon-bottom' }
       ],
-      value: '选项4'
+      value: '123'
     }
   }
 }
