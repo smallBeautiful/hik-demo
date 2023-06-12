@@ -79,6 +79,12 @@ export const constantRoutes = [
     meta: { title: '组件', icon: 'el-icon-s-help' },
     children: [
       {
+        path: 'table',
+        name: 'table',
+        component: () => import('@/views/hik/table'),
+        meta: { title: 'table', icon: 'table' }
+      },
+      {
         path: 'form',
         name: 'form',
         component: () => import('@/views/hik/form'),
