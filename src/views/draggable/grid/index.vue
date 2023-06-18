@@ -25,7 +25,7 @@
                   <div>hello</div>
                   <span slot="reference">
                     <span class="user">
-                      <span @click="go">{{ user.name }}</span>
+                      <span @click="go">{{ user.name }}111</span>
                       <span style="margin-left: 10px" @click="popoverHandle(user)">{{ user.id }}</span>
                     </span>
                   </span>

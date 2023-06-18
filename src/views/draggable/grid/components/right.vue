@@ -3,19 +3,20 @@
     <div class="item item1">
       <div class="header" @click="toggleHide(0)">item1</div>
       <div v-show="hideList[0]" class="content">
-        content1
+        固定高度，偶尔会改变
       </div>
     </div>
     <div class="item item2">
       <div class="header" @click="toggleHide(1)">item2</div>
       <div v-show="hideList[1]" class="content">
-        content2
+        固定高度，不会改变
       </div>
     </div>
     <div class="item item3" :class="{ 'flex-grow': hideList[2] }">
       <div class="header" @click="toggleHide(2)">item3</div>
       <div v-show="hideList[2]" class="content content2" style="height: 436px;">
-        <div v-show="false" class="list-container">
+        <div v-show="true" class="list-container">
+          固定高度，其他模块多出的高度从这里拿
           <div>content3</div>
           <div>content3</div>
           <div>content3</div>
@@ -50,6 +51,7 @@
     <div class="item item4" :class="{ 'flex-grow': !hideList[2] && hideList[3] }">
       <div class="header" @click="toggleHide(3)">item4</div>
       <div v-show="hideList[3]" class="content">
+        固定一个高度，超出滚动条
         <draggable
           v-model="list"
           class="draggable"
@@ -104,7 +106,11 @@ export default {
       _this.$nextTick(() => {
         _this.clientHeight = getClientHeight(document.getElementsByClassName('content2')[0])
       })
-    }, 16)
+    }, 16),
+    // 计算高度
+    _calHeight() {
+
+    }
   }
 }
 </script>
@@ -121,7 +127,7 @@ export default {
     width: 100%;
     .header {
       height: 30px;
-      background: cyan;
+      background: #fff;
     }
   }
   .item1 {
@@ -136,6 +142,9 @@ export default {
 .content2 {
   height: calc(100% - 20px);
   overflow-y: auto;
+}
+.content {
+  background: orange;
 }
 .user {
   display: inline-block;

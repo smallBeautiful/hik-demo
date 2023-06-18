@@ -1,6 +1,12 @@
 <template>
-  <div class="ball-wrap" v-drag @touchmove.prevent>
-    drag
+  <div>
+    <div class="ball-wrap" v-drag @touchmove.prevent>
+      drag
+    </div>
+    <div class="margin-top">
+      svg right
+      <svg-icon style="font-size: 28px;font-weight: bold" icon-class="round_right" />
+    </div>
   </div>
 </template>
 
