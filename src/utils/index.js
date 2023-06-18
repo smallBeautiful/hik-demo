@@ -1,3 +1,6 @@
+const SPECIAL_CHARS_REGEXP = /([\:\-\_]+(.))/g
+const MOZ_HACK_REGEXP = /^moz([A-Z])/
+
 /**
  * Created by PanJiaChen on 16/11/18.
  */
@@ -137,4 +140,47 @@ export function arrayGroupBy(list, groupId) {
     return [item[groupId]]
   })
   return sorted
+}
+
+/* istanbul ignore next */
+const camelCase = function(name) {
+  return name.replace(SPECIAL_CHARS_REGEXP, function(_, separator, letter, offset) {
+    return offset ? letter.toUpperCase() : letter
+  }).replace(MOZ_HACK_REGEXP, 'Moz$1')
+}
+
+/* istanbul ignore next */
+export const on = (function() {
+  if (document.addEventListener) {
+    return function(element, event, handler) {
+      if (element && event && handler) {
+        element.addEventListener(event, handler, false)
+      }
+    }
+  } else {
+    return function(element, event, handler) {
+      if (element && event && handler) {
+        element.attachEvent('on' + event, handler)
+      }
+    }
+  }
+})()
+
+/* istanbul ignore next */
+export const getStyle = function(element, styleName) {
+  if (!element || !styleName) return '0'
+  styleName = camelCase(styleName)
+  if (styleName === 'float') {
+    styleName = 'cssFloat'
+  }
+  try {
+    var computed = document.defaultView.getComputedStyle(element, '')
+    return element.style[styleName] || computed ? computed[styleName] : null
+  } catch (e) {
+    return element.style[styleName]
+  }
+}
+
+export const findChildrenByClassName = function(parentElement, className) {
+  return parentElement.querySelectorAll('.' + className)
 }

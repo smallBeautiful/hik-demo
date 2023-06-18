@@ -177,7 +177,6 @@ export default {
       }
     },
     _resize: throttle((_this) => {
-      console.log('resize')
       _this.$nextTick(() => {
         _this.clientHeight = getClientHeight(document.getElementsByClassName('grid-item')[0])
       })
