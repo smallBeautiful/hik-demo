@@ -63,8 +63,8 @@ export const constantRoutes = [
     meta: { title: 'Utils', icon: 'el-icon-s-help' },
     children: [
       {
-        path: 'tree',
-        name: 'Tree',
+        path: 'tree2',
+        name: 'Tree2',
         component: () => import('@/views/utils/tree'),
         meta: { title: 'Tree', icon: 'table' }
       }
@@ -79,10 +79,10 @@ export const constantRoutes = [
     meta: { title: '组件', icon: 'el-icon-s-help' },
     children: [
       {
-        path: 'table',
-        name: 'table',
+        path: 'table2',
+        name: 'table2',
         component: () => import('@/views/hik/table'),
-        meta: { title: 'table', icon: 'table' }
+        meta: { title: 'table2', icon: 'table' }
       },
       {
         path: 'form',
@@ -279,8 +279,8 @@ export const constantRoutes = [
     meta: { title: 'directive', icon: 'el-icon-s-help' },
     children: [
       {
-        path: 'directive',
-        name: 'directive',
+        path: 'directive1',
+        name: 'directive1',
         component: () => import('@/views/directive/drag'),
         meta: { title: 'drag', icon: 'table' }
       }
@@ -295,8 +295,8 @@ export const constantRoutes = [
     meta: { title: 'canvas', icon: 'el-icon-s-help' },
     children: [
       {
-        path: 'canvas',
-        name: 'canvas',
+        path: 'canvas1',
+        name: 'canvas1',
         component: () => import('@/views/canvas/bezierCurves'),
         meta: { title: 'bezierCurves', icon: 'table' }
       }
@@ -311,6 +311,12 @@ export const constantRoutes = [
     meta: { title: 'element组件', icon: 'el-icon-s-help' },
     children: [
       {
+        path: 'el-scroll',
+        name: 'el-scroll',
+        component: () => import('@/views/element/scroll'),
+        meta: { title: 'el-scroll', icon: 'table' }
+      },
+      {
         path: 'checkbox',
         name: 'checkbox',
         component: () => import('@/views/element/checkbox-disabled'),
@@ -318,15 +324,15 @@ export const constantRoutes = [
       },
       {
         path: 'select',
-        name: 'select',
+        name: 'el-select',
         component: () => import('@/views/element/select'),
         meta: { title: 'select', icon: 'table' }
       },
       {
-        path: 'tree',
-        name: 'tree',
+        path: 'tree1',
+        name: 'tree1',
         component: () => import('@/views/element/tree'),
-        meta: { title: 'tree', icon: 'tree' }
+        meta: { title: 'tree1', icon: 'tree' }
       }
     ]
   },
