@@ -56,7 +56,8 @@
           v-model="list"
           class="draggable"
           :group="{ name: 'people' }"
-          ghost-class="ghost"
+          ghost-class="ghost111"
+          drag-class="ghost222"
           :sort="false"
         >
           <span v-for="(user) in list" :key="user.id" class="user">
@@ -134,7 +135,6 @@ export default {
        * */
       // 容器高度
       const containerHeight = Number(getStyle(document.getElementsByClassName('grid-right')[0], 'height').replace('px', ''))
-      console.log('containerHeight: ', containerHeight)
       let allMarginTop = 0
       let allContainerHeight = 0
       // 获取各个模块的高度
@@ -162,8 +162,6 @@ export default {
       }
       // 剩余的高度 = 总高度 - 20的padding - 其他容器padding - 自身30
       this.autoHeight = containerHeight - allContainerHeight - CONTAINER_PADGING - allMarginTop
-      console.log(this.autoHeight)
-      console.log(cloneDeep(this.heightList))
       // console.log('containerHeight: ', allContainerHeight)
       // console.log('allMarginTop: ', allMarginTop)
       // console.log('restHeight: ', restHeight)

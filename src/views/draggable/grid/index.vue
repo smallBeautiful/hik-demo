@@ -2,7 +2,7 @@
   <div class="flex-container grid-container">
     <div class="grid left">
       <div v-for="(gridRow, index) in grid" :key="index" class="grid-row">
-        <div v-for="(block, blockIndex) in gridRow" :key="blockIndex" class="grid-item">
+        <div v-for="(block, blockIndex) in gridRow" :key="blockIndex" class="grid-item" :style="{ background: block.color }">
           <div>
             <el-scrollbar :style="{ height: clientHeight + 'px' }">
               <draggable
@@ -11,7 +11,10 @@
                 :style="{ height: clientHeight + 'px' }"
                 class="draggable"
                 :group="{ name: 'people' }"
-                ghost-class="ghost"
+                ghost-class="ghost111"
+                drag-class="ghost222"
+                chosen-class="ghost333"
+                :animation="200"
                 @end="end"
               >
                 <el-popover
@@ -50,7 +53,6 @@
 import draggable from 'vuedraggable'
 import right from '@/views/draggable/grid/components/right.vue'
 import clickoutside from '@/utils/directives/clickoutside'
-import { HappyScroll } from 'vue-happy-scroll'
 // 引入css，推荐将css放入main入口中引入一次即可。
 import 'vue-happy-scroll/docs/happy-scroll.css'
 import { getClientHeight } from '@/utils/directives/dom'
@@ -58,7 +60,7 @@ import { throttle } from 'lodash'
 
 export default {
   components: {
-    draggable, right, HappyScroll
+    draggable, right
   },
   directives: {
     clickoutside
@@ -112,19 +114,19 @@ export default {
             { name: 'Swift Tiger', id: 998 },
             { name: 'Bright Falcon', id: 999 },
             { name: 'Wise Falcon', id: 1000 },
-            { name: 'Jack', id: 50 }] },
-          { id: 102, list: [{ name: '陈秀英', id: '5', visible: false }] },
-          { id: 103, list: [] }
+            { name: 'Jack', id: 50 }], color: '#ee3f4d' },
+          { id: 102, list: [{ name: '陈秀英', id: '5', visible: false }], color: '#ee3f4d' },
+          { id: 103, list: [], color: '#ee3f4d' }
         ],
         [
-          { id: 201, list: [] },
-          { id: 202, list: [] },
-          { id: 203, list: [] }
+          { id: 201, list: [], color: '#2983bb' },
+          { id: 202, list: [], color: '#2983bb' },
+          { id: 203, list: [], color: '#2983bb' }
         ],
         [
-          { id: 301, list: [] },
-          { id: 302, list: [{ name: '周磊', id: '7', visible: false }] },
-          { id: 303, list: [{ name: '沈强', id: '10', visible: false }] }
+          { id: 301, list: [], color: '#f1908c' },
+          { id: 302, list: [{ name: '周磊', id: '7', visible: false }], color: '#f1908c' },
+          { id: 303, list: [{ name: '沈强', id: '10', visible: false }], color: '#f1908c' }
         ]
       ],
       draggingIndex: null,
@@ -230,15 +232,6 @@ export default {
   .grid-item {
     background: orange;
     width: 100%;
-    .user {
-      display: inline-block;
-      background: #FFFFFF;
-      margin: 4px;
-      padding: 5px;
-      border-radius: 4px;
-      color: cyan;
-      cursor: pointer;
-    }
   }
 }
 .grid-row + .grid-row {
@@ -261,6 +254,36 @@ export default {
   .el-scrollbar__view {
     min-height: 100%;
   }
+}
+/* 将要落位的颜色 */
+.ghost111 {
+  opacity: 0.3;
+}
+/* 空中飞的元素 */
+.ghost222 {
+  background: transparent;
+  padding: 5px;
+  border-radius: 4px;
+  .user {
+    background: #fff;
+    color: cyan;
+    padding: 4px!important;
+  }
+}
+.ghost333 {
+  background: transparent;
+  overflow: hidden;
+  position: relative;
+  z-index: 2;
+}
+.user {
+  display: inline-block;
+  background: #FFFFFF;
+  margin: 4px;
+  padding: 5px;
+  border-radius: 4px;
+  color: cyan;
+  cursor: pointer;
 }
 </style>
 
