@@ -333,6 +333,12 @@ export const constantRoutes = [
         name: 'tree1',
         component: () => import('@/views/element/tree'),
         meta: { title: 'tree1', icon: 'tree' }
+      },
+      {
+        path: 'cascader',
+        name: 'cascader',
+        component: () => import('@/views/element/cascader'),
+        meta: { title: '级联选择器', icon: 'tree' }
       }
     ]
   },
