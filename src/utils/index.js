@@ -220,3 +220,18 @@ function screenRateSize() {
     height: formatDecimal(realScreenHeight)
   }
 }
+
+/**
+ * 根据给定数组的顺序，对包含对象的数组进行排序。
+ * @param {Object[]} obj - 包含对象的数组
+ * @param {Array} arr - 用于排序的数组
+ * @returns {Object[]} - 排序后的数组
+ */
+export const sortObjectsByArrayOrder = (obj, arr) => {
+  // 创建一个新数组，根据给定的顺序进行排序
+  // 返回排序后的数组
+  return arr.map((item) => {
+    // 使用 find() 方法在 obj 数组中查找与当前元素匹配的对象
+    return obj.find((objItem) => objItem.name === item)
+  })
+}
