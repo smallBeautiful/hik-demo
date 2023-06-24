@@ -3,12 +3,12 @@
     <div class="grid left">
       <div v-for="(gridRow, index) in grid" :key="index" class="grid-row">
         <div v-for="(block, blockIndex) in gridRow" :key="blockIndex" class="grid-item" :style="{ background: block.color }">
-          <div>
-            <el-scrollbar :style="{ height: clientHeight + 'px' }">
+          <div :style="{ height: clientHeight + 'px' }">
+            <el-scrollbar :style="{ height: '100%' }">
               <draggable
                 v-model="block.list"
                 v-clickoutside="closeDropdown"
-                :style="{ height: clientHeight + 'px' }"
+                :style="{ height: '100%', minHeight: clientHeight + 'px' }"
                 class="draggable"
                 :group="{ name: 'people' }"
                 ghost-class="ghost111"
