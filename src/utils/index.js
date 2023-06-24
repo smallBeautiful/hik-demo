@@ -184,3 +184,39 @@ export const getStyle = function(element, styleName) {
 export const findChildrenByClassName = function(parentElement, className) {
   return parentElement.querySelectorAll('.' + className)
 }
+
+/**
+ * 将数字保留两位小数，但只有当小数位数大于两位时才进行处理，小于两位时不做任何改变。
+ * @param {number} number - 要处理的数字
+ * @returns {number|string} - 处理后的结果，保留两位小数或原始数字
+ */
+function formatDecimal(number) {
+  // 获取小数位数
+  const decimalCount = number.toString().split('.')[1]?.length || 0
+
+  // 如果小数位数大于2，则保留两位小数
+  if (decimalCount > 2) {
+    return number.toFixed(2)
+  } else {
+    // 小于等于2位小数时，返回原始数字
+    return number
+  }
+}
+
+/**
+ * 计算缩放后的真实分辨率
+ * @returns {{width: number, height: number}} - 宽, 高
+ */
+function screenRateSize() {
+  const screenWidth = window.screen.width // 屏幕宽度
+  const screenHeight = window.screen.height // 屏幕高度
+  const screenPixelRatio = window.devicePixelRatio // 屏幕像素密度
+
+  const realScreenWidth = screenWidth / screenPixelRatio
+  const realScreenHeight = screenHeight / screenPixelRatio
+
+  return {
+    width: formatDecimal(realScreenWidth),
+    height: formatDecimal(realScreenHeight)
+  }
+}

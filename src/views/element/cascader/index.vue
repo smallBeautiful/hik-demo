@@ -1,15 +1,16 @@
 <!-- el-cascader-loading -->
 <template>
-  <div class="app-container">
-    <div class="block">
-      <span class="demonstration">折叠展示Tag</span>
-      <el-cascader
-        :options="options"
-        :props="props"
-        collapse-tags
-        clearable></el-cascader>
-    </div>
-  </div>
+  <el-cascader
+    v-model="selectedOptions"
+    :options="[]"
+    :props="props"
+    :loading="isLoading"
+    @change="handleCascaderChange"
+  >
+    <template slot="empty">
+      hello
+    </template>
+  </el-cascader>
 </template>
 
 <script>
@@ -17,6 +18,8 @@ export default {
   data() {
     return {
       props: { multiple: true },
+      selectedOptions: '',
+      isLoading: true, // 加载状态标识
       options: [{
         value: 1,
         label: '东南',
@@ -64,6 +67,19 @@ export default {
           ]
         }]
       }]
+    }
+  },
+  methods: {
+    handleCascaderChange(value) {
+      this.isLoading = true // 设置加载状态为true
+      console.log(11111)
+      // 模拟异步加载
+      setTimeout(() => {
+        // 异步加载完成后，设置加载状态为false，并更新选项
+        this.isLoading = false
+        // 更新选项，根据实际情况添加新的选项
+        this.options[0].children.push({ value: 'option1-3', label: 'Option 1-3' })
+      }, 2000)
     }
   }
 }
