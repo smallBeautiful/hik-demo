@@ -1,16 +1,16 @@
 <!-- el-cascader-loading -->
 <template>
-  <el-cascader
-    v-model="selectedOptions"
-    :options="[]"
-    :props="props"
-    :loading="isLoading"
-    @change="handleCascaderChange"
-  >
-    <template slot="empty">
-      hello
-    </template>
-  </el-cascader>
+  <div>
+    <el-cascader
+      v-model="selectedOptions"
+      placeholder="hello"
+      popper-class="popper-loading"
+      :options="options"
+      :props="props"
+      :loading="isLoading"
+    />
+    <div class="loader"></div>
+  </div>
 </template>
 
 <script>
@@ -20,7 +20,8 @@ export default {
       props: { multiple: true },
       selectedOptions: '',
       isLoading: true, // 加载状态标识
-      options: [{
+      options: [],
+      options2: [{
         value: 1,
         label: '东南',
         children: [{
@@ -69,18 +70,35 @@ export default {
       }]
     }
   },
-  methods: {
-    handleCascaderChange(value) {
-      this.isLoading = true // 设置加载状态为true
-      console.log(11111)
-      // 模拟异步加载
-      setTimeout(() => {
-        // 异步加载完成后，设置加载状态为false，并更新选项
-        this.isLoading = false
-        // 更新选项，根据实际情况添加新的选项
-        this.options[0].children.push({ value: 'option1-3', label: 'Option 1-3' })
-      }, 2000)
-    }
+  mounted() {
+    setTimeout(() => {
+      this.options = this.options2
+    }, 3000)
   }
 }
 </script>
+<style lang="scss">
+.popper-loading {
+  .el-cascader-menu__empty-text {
+    &:before {
+      content: '加载中...';
+      color: #C0C4CC;
+      position: absolute;
+    }
+    color: #fff;
+  }
+}
+.loader {
+  border: 4px solid #f3f3f3; /* 设置边框样式 */
+  border-top: 4px solid #3498db; /* 设置顶部边框样式，即加载图标的颜色 */
+  border-radius: 50%; /* 设置圆角，使边框为圆形 */
+  width: 20px; /* 设置加载图标的宽度 */
+  height: 20px; /* 设置加载图标的高度 */
+  animation: spin 1s linear infinite; /* 添加旋转动画 */
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); } /* 设置初始角度为0度 */
+  100% { transform: rotate(360deg); } /* 设置最终角度为360度，即一圈完整的旋转 */
+}
+</style>
