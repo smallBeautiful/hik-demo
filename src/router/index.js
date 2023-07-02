@@ -339,6 +339,12 @@ export const constantRoutes = [
         name: 'cascader',
         component: () => import('@/views/element/cascader'),
         meta: { title: '级联选择器', icon: 'tree' }
+      },
+      {
+        path: 'tableHeader',
+        name: 'tableHeader',
+        component: () => import('@/views/element/table-header'),
+        meta: { title: '表头', icon: 'table' }
       }
     ]
   },

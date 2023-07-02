@@ -207,7 +207,7 @@ function formatDecimal(number) {
  * 计算缩放后的真实分辨率
  * @returns {{width: number, height: number}} - 宽, 高
  */
-function screenRateSize() {
+export const screenRateSize = () => {
   const screenWidth = window.screen.width // 屏幕宽度
   const screenHeight = window.screen.height // 屏幕高度
   const screenPixelRatio = window.devicePixelRatio // 屏幕像素密度
