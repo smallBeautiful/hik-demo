@@ -345,6 +345,12 @@ export const constantRoutes = [
         name: 'tableHeader',
         component: () => import('@/views/element/table-header'),
         meta: { title: '表头', icon: 'table' }
+      },
+      {
+        path: 'dialogSelect',
+        name: 'dialogSelect',
+        component: () => import('@/views/element/dialog-select'),
+        meta: { title: 'select溢出', icon: 'table' }
       }
     ]
   },
