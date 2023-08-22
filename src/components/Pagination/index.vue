@@ -83,7 +83,6 @@ export default {
     handleCurrentChange(val) {
       this.$emit('pagination', { page: val, limit: this.pageSize })
       if (this.autoScroll) {
-        console.log(11111)
         scrollTo(0, 800)
       }
     }

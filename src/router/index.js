@@ -263,6 +263,12 @@ export const constantRoutes = [
         meta: { title: 'table', icon: 'table' }
       },
       {
+        path: '/pagination-front',
+        name: 'pagination-front',
+        component: () => import('@/views/table/pagination-front'),
+        meta: { title: '前端分页', icon: 'table' }
+      },
+      {
         path: '/dyTable',
         name: 'dyTable',
         component: () => import('@/views/table/dyTable'),
@@ -354,22 +360,6 @@ export const constantRoutes = [
       }
     ]
   },
-  //
-  // {
-  //   path: '/table',
-  //   component: Layout,
-  //   redirect: '/element/table',
-  //   name: 'element',
-  //   meta: { title: 'table组件', icon: 'el-icon-s-help' },
-  //   children: [
-  //     {
-  //       path: 'table',
-  //       name: 'table',
-  //       component: () => import('@/views/table/scroll'),
-  //       meta: { title: 'scroll', icon: 'table' }
-  //     }
-  //   ]
-  // },
 
   {
     path: '/form',
