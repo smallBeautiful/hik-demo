@@ -235,3 +235,12 @@ export const sortObjectsByArrayOrder = (obj, arr) => {
     return obj.find((objItem) => objItem.name === item)
   })
 }
+
+export const scrollToElement = (name) => {
+  const element = document.getElementsByClassName(name)[0]
+  if (element) {
+    element.scrollIntoView({ behavior: 'smooth' })
+  } else {
+    console.error("Element with id '" + name + "' not found.")
+  }
+}

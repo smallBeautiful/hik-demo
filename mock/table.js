@@ -6,7 +6,7 @@ function mock() {
       id: '@increment()',
       title: '@sentence(15, 21)',
       'status|1': ['published', 'draft', 'deleted'],
-      author: 'name1',
+      author: 'lijie',
       display_time: '@datetime',
       pageviews: '@integer(4100, 5000)'
     }]
