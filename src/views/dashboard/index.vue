@@ -1,10 +1,14 @@
 <template>
   <div class="dashboard-container">
+    <el-button @click="open" type="primary" style="margin-left: 16px;">
+      点我打开
+    </el-button>
 <!--    <div id="e1" class="element element_1"></div>-->
 <!--    <div id="e2" class="element element_2"></div>-->
 <!--    <div id="e3" class="element element_3"></div>-->
 <!--    <div id="e4" class="element element_4"></div>-->
 <!--    <div id="e5" class="element element_5"></div>-->
+    <drawer ref="drawer"/>
     <div class="box">
       <div v-for="item in list" :key="item.id" class="item" :style="{ top: item.top, left: item.left }">
         <div class="decoration" />
@@ -15,8 +19,12 @@
 </template>
 
 <script>
+import drawer from './drawer'
 export default {
   name: 'Dashboard',
+  components: {
+    drawer
+  },
   mounted() {
     this.list.forEach(item => {
       const width = this.calculateWidth(item.name)
@@ -52,6 +60,9 @@ export default {
     }
   },
   methods: {
+    open() {
+      this.$refs.drawer.open()
+    },
     drawLine(obj1, obj2) {
       // 起点坐标
       var x1 = obj1.getBoundingClientRect().left + obj1.clientWidth / 2

@@ -43,7 +43,8 @@ import {
   Message,
   Notification,
   Cascader,
-  Option
+  Option,
+  Drawer
 } from 'element-ui'
 
 Vue.use(Pagination)
@@ -67,6 +68,7 @@ Vue.use(Select)
 Vue.use(Button)
 Vue.use(Table)
 Vue.use(TableColumn)
+Vue.use(Drawer)
 Vue.use(DatePicker)
 Vue.use(Popover)
 Vue.use(Tooltip)
