@@ -1,8 +1,10 @@
 <template>
   <div class="dashboard-container">
-    <div id="point1" class="point" style="top: 100px; left: 100px;" />
-    <div id="point2" class="point" style="top: 300px; left: 300px;" />
-    <div id="line" class="line" />
+<!--    <div id="e1" class="element element_1"></div>-->
+<!--    <div id="e2" class="element element_2"></div>-->
+<!--    <div id="e3" class="element element_3"></div>-->
+<!--    <div id="e4" class="element element_4"></div>-->
+<!--    <div id="e5" class="element element_5"></div>-->
     <div class="box">
       <div v-for="item in list" :key="item.id" class="item" :style="{ top: item.top, left: item.left }">
         <div class="decoration" />
@@ -13,17 +15,8 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import zoomFix from '@/utils/directives/zoomFix'
-
 export default {
   name: 'Dashboard',
-  directives: { zoomFix },
-  computed: {
-    ...mapGetters([
-      'name'
-    ])
-  },
   mounted() {
     this.list.forEach(item => {
       const width = this.calculateWidth(item.name)
@@ -31,8 +24,19 @@ export default {
       item.transform = `translate(${num}px, 0)`
     })
     this.$nextTick(() => {
-      this.fixPosition()
-      this.handleLine()
+      const domList = document.getElementsByClassName('item')
+      const list = Array.from(domList)
+      list.forEach(item => {
+        console.log(item.children[0], item.children[1])
+        this.drawLine(item.children[0], item.children[1])
+      })
+      // this.drawLine(document.getElementById('e1'), document.getElementById('e4'))
+      // this.drawLine(document.getElementById('e1'), document.getElementById('e5'))
+      // this.drawLine(document.getElementById('e2'), document.getElementById('e3'))
+      // this.drawLine(document.getElementById('e2'), document.getElementById('e5'))
+      // this.drawLine(document.getElementById('e3'), document.getElementById('e4'))
+      // this.fixPosition()
+      // this.handleLine()
     })
   },
   data() {
@@ -48,6 +52,34 @@ export default {
     }
   },
   methods: {
+    drawLine(obj1, obj2) {
+      // 起点坐标
+      var x1 = obj1.getBoundingClientRect().left + obj1.clientWidth / 2
+      var y1 = obj1.getBoundingClientRect().top + obj1.clientHeight / 2
+
+      // 终点坐标
+      var x2 = obj2.getBoundingClientRect().left + obj2.clientWidth / 2
+      var y2 = obj2.getBoundingClientRect().top + obj2.clientHeight / 2
+
+      // 计算连接线长度
+      var length = Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1))
+
+      // 计算连接线旋转弧度值
+      var rad = Math.atan2((y2 - y1), (x2 - x1))
+
+      // 连接线未旋转前，起点坐标计算
+      var top = (y1 + y2) / 2
+      var left = (x1 + x2) / 2 - length / 2
+
+      // 创建连接线 dom 节点，并设置样式
+      var line = document.createElement('div')
+      var style = 'position: absolute; background-image: linear-gradient(to right, #ccc 0%, #ccc 50%, transparent 50%);\n' +
+        'background-size: 8px 1px;\n' +
+        'background-repeat: repeat-x; height: 1px; top:' +
+        top + 'px; left:' + left + 'px; width: ' + length + 'px; transform: rotate(' + rad + 'rad);'
+      line.setAttribute('style', style)
+      document.body.appendChild(line)
+    },
     connectPoints(point1, point2, line) {
       const dx = point2.offsetLeft - point1.offsetLeft
       const dy = point2.offsetTop - point1.offsetTop
@@ -128,13 +160,12 @@ export default {
 </script>
 
 <style lang="scss">
-.point {
-  width: 10px;
-  height: 10px;
-  background-color: red;
-  position: absolute;
-}
-
+.element { position: absolute; width: 50px; height: 50px; border-radius: 25px; background-color: yellow; }
+.element_1 { top: 100px; left: 175px; }
+.element_2 { top: 175px; left: 75px; }
+.element_3 { top: 175px; left: 275px; }
+.element_4 { top: 300px; left: 100px; }
+.element_5 { top: 300px; left: 250px; }
 .line {
   position: absolute;
   border-bottom: 2px solid black;
