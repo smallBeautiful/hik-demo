@@ -175,6 +175,12 @@ export const constantRoutes = [
         meta: { title: '滚动图表2', icon: 'table' }
       },
       {
+        path: 'scroll3',
+        name: 'scroll3',
+        component: () => import('@/views/hik/scroll3/index'),
+        meta: { title: '折线图table', icon: 'table' }
+      },
+      {
         path: 'sort',
         name: 'sort',
         component: () => import('@/views/hik/sort'),
