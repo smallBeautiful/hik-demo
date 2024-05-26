@@ -1,14 +1,5 @@
 <template>
   <div class="dashboard-container">
-    <el-button @click="open" type="primary" style="margin-left: 16px;">
-      点我打开
-    </el-button>
-<!--    <div id="e1" class="element element_1"></div>-->
-<!--    <div id="e2" class="element element_2"></div>-->
-<!--    <div id="e3" class="element element_3"></div>-->
-<!--    <div id="e4" class="element element_4"></div>-->
-<!--    <div id="e5" class="element element_5"></div>-->
-    <drawer ref="drawer"/>
     <div class="box">
       <div v-for="item in list" :key="item.id" class="item" :style="{ top: item.top, left: item.left }">
         <div class="decoration" />
@@ -19,11 +10,19 @@
 </template>
 
 <script>
-import drawer from './drawer'
 export default {
   name: 'Dashboard',
-  components: {
-    drawer
+  data() {
+    return {
+      list: [
+        { transform: 0, left: '40%', top: '31%', id: 1, name: '你好啊' },
+         { transform: 0, left: '45%', top: '30%', id: 2, name: '你好啊的撒旦飒飒的' },
+        { transform: 0, left: '46%', top: '35%', id: 3, name: '你好啊' },
+        { transform: 0, left: '49%', top: '39%', id: 4, name: '你好啊的撒旦飒飒的' },
+        { transform: 0, left: '52%', top: '55%', id: 5, name: '你' },
+        { transform: 0, left: '60%', top: '30%', id: 6, name: '你好啊的撒旦飒飒的' }
+      ]
+    }
   },
   mounted() {
     this.list.forEach(item => {
@@ -38,39 +37,22 @@ export default {
         console.log(item.children[0], item.children[1])
         this.drawLine(item.children[0], item.children[1])
       })
-      // this.drawLine(document.getElementById('e1'), document.getElementById('e4'))
-      // this.drawLine(document.getElementById('e1'), document.getElementById('e5'))
-      // this.drawLine(document.getElementById('e2'), document.getElementById('e3'))
-      // this.drawLine(document.getElementById('e2'), document.getElementById('e5'))
-      // this.drawLine(document.getElementById('e3'), document.getElementById('e4'))
-      // this.fixPosition()
-      // this.handleLine()
     })
   },
-  data() {
-    return {
-      list: [
-        { transform: 0, left: '40%', top: '31%', id: 1, name: '你好啊' },
-        { transform: 0, left: '45%', top: '30%', id: 2, name: '你好啊的撒旦飒飒的' },
-        { transform: 0, left: '46%', top: '35%', id: 3, name: '你好啊' },
-        { transform: 0, left: '49%', top: '39%', id: 4, name: '你好啊的撒旦飒飒的' },
-        { transform: 0, left: '52%', top: '55%', id: 5, name: '你' },
-        { transform: 0, left: '60%', top: '30%', id: 6, name: '你好啊的撒旦飒飒的' }
-      ]
-    }
-  },
   methods: {
-    open() {
-      this.$refs.drawer.open()
-    },
     drawLine(obj1, obj2) {
+      const el = document.getElementsByClassName('box')[0].getBoundingClientRect()
+      const xGap = el.left + 1
+      const yGap = el.top + 1
       // 起点坐标
-      var x1 = obj1.getBoundingClientRect().left + obj1.clientWidth / 2
-      var y1 = obj1.getBoundingClientRect().top + obj1.clientHeight / 2
+      var x1 = obj1.getBoundingClientRect().left + obj1.clientWidth / 2 - xGap
+      var y1 = obj1.getBoundingClientRect().top + obj1.clientHeight / 2 - yGap
+      console.log(x1, y1)
 
       // 终点坐标
-      var x2 = obj2.getBoundingClientRect().left + obj2.clientWidth / 2
-      var y2 = obj2.getBoundingClientRect().top + obj2.clientHeight / 2
+      var x2 = obj2.getBoundingClientRect().left + obj2.clientWidth / 2 - xGap
+      var y2 = obj2.getBoundingClientRect().top + obj2.clientHeight / 2 - yGap
+      console.log(x2, y2)
 
       // 计算连接线长度
       var length = Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1))
@@ -89,7 +71,7 @@ export default {
         'background-repeat: repeat-x; height: 1px; top:' +
         top + 'px; left:' + left + 'px; width: ' + length + 'px; transform: rotate(' + rad + 'rad);'
       line.setAttribute('style', style)
-      document.body.appendChild(line)
+      document.getElementsByClassName('box')[0].appendChild(line)
     },
     connectPoints(point1, point2, line) {
       const dx = point2.offsetLeft - point1.offsetLeft
@@ -196,6 +178,8 @@ export default {
         top: 0;
         left: 0;
         .decoration {
+          position: relative;
+          z-index: 2;
           width: 14px;
           height: 14px;
           background: darkorange;
@@ -203,6 +187,7 @@ export default {
         }
         .text {
           position: relative;
+          z-index: 2;
           top: -80px;
           //-webkit-transform: translate(-42%, 0);
           //transform: translate(-50%, 0);
