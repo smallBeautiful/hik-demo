@@ -72,6 +72,22 @@ export const constantRoutes = [
   },
 
   {
+    path: '/func',
+    component: Layout,
+    redirect: '/func/debounce',
+    name: 'func',
+    meta: { title: '功能模块', icon: 'el-icon-s-help' },
+    children: [
+      {
+        path: 'debounce',
+        name: 'debounce',
+        component: () => import('@/views/func/debounce'),
+        meta: { title: 'debounce', icon: 'table' }
+      }
+    ]
+  },
+
+  {
     path: '/hik',
     component: Layout,
     redirect: '/hik/index',
