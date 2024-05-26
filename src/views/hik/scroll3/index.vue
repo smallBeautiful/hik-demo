@@ -58,15 +58,16 @@ export default {
         { month: 'Mar', city: 'Tokyo', temperature: 9.5 },
         { month: 'Apr', city: 'Tokyo', temperature: 14.5 },
         { month: 'May', city: 'Tokyo', temperature: 18.4 },
-        { month: 'Jan', city: 'London', temperature2: 3.9 },
-        { month: 'Feb', city: 'London', temperature2: 4.2 },
-        { month: 'Mar', city: 'London', temperature2: 5.7 },
-        { month: 'Apr', city: 'London', temperature2: 8.5 },
-        { month: 'May', city: 'hangzhou', temperature3: 15.9 },
-        { month: 'Jan', city: 'hangzhou', temperature3: 6.9 },
-        { month: 'Feb', city: 'hangzhou', temperature3: 8.2 },
-        { month: 'Mar', city: 'hangzhou', temperature3: 6.7 },
-        { month: 'Apr', city: 'hangzhou', temperature3: 8.5 }
+        { month: 'Jan', city: 'London', temperature: 3.9 },
+        { month: 'Feb', city: 'London', temperature: 4.2 },
+        { month: 'Mar', city: 'London', temperature: 5.7 },
+        { month: 'Apr', city: 'London', temperature: 8.5 },
+        { month: 'May', city: 'London', temperature: 8.5 },
+        { month: 'Jan', city: 'hangzhou', temperature: 15.9 },
+        { month: 'Feb', city: 'hangzhou', temperature: 6.9 },
+        { month: 'Mar', city: 'hangzhou', temperature: 8.2 },
+        { month: 'Apr', city: 'hangzhou', temperature: 6.7 },
+        { month: 'May', city: 'hangzhou', temperature: 8.5 }
       ]
       const chart = new G2.Chart({
         container: 'container-line3',
@@ -81,32 +82,32 @@ export default {
       chart.tooltip({
       })
       chart.tooltip(true, {
-        containerTpl: '<div class="g2-tooltip" style="display: none">' +
-          '<div class="g2-tooltip-title" style="margin:10px 0;" style="display: none"></div>' +
+        containerTpl: '<div class="g2-tooltip">' +
+          '<div class="g2-tooltip-title" style="margin:0"></div>' +
           '<ul class="g2-tooltip-list" style="display: none"></ul></div>',
-        itemTpl: '<li style="display: none" data-index={index}><span style="background-color:{color};width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:8px;"></span>{name}: {value}</li>'
+        itemTpl: '<li data-index={index}><span style="background-color:{color};width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:8px;"></span>{name}: {value}</li>'
       })
       chart
         .line()
-        .position('month*temperature')
+        .position('month*temperature*city')
         .color('city')
-        .tooltip('month*temperature', () => {
-          return { title: 'hello' }
+        .tooltip('month*temperature*city', (month, temperature, city) => {
+          return { title: city }
         })
-      chart
-        .line()
-        .position('month*temperature2')
-        .color('city')
-        .tooltip('month*temperature2', () => {
-          return { title: 'hello2' }
-        })
-      chart
-        .line()
-        .position('month*temperature3')
-        .color('city')
-        .tooltip('month*temperature3', () => {
-          return { title: 'hello3' }
-        })
+      // chart
+      //   .line()
+      //   .position('month*temperature2')
+      //   .color('city')
+      //   .tooltip('month*temperature2', () => {
+      //     return { title: 'hello2' }
+      //   })
+      // chart
+      //   .line()
+      //   .position('month*temperature3')
+      //   .color('city')
+      //   .tooltip('month*temperature3', () => {
+      //     return { title: 'hello3' }
+      //   })
       // chart.point().position('month*temperature').color('city')
       chart.render()
     }
