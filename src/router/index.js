@@ -88,6 +88,22 @@ export const constantRoutes = [
   },
 
   {
+    path: '/css2',
+    component: Layout,
+    redirect: '/css2/ellipsis',
+    name: 'css2',
+    meta: { title: 'css', icon: 'el-icon-s-help' },
+    children: [
+      {
+        path: 'css',
+        name: 'css',
+        component: () => import('@/views/css/ellipsis'),
+        meta: { title: 'ellipsis', icon: 'table' }
+      }
+    ]
+  },
+
+  {
     path: '/hik',
     component: Layout,
     redirect: '/hik/index',
