@@ -111,6 +111,12 @@ export const constantRoutes = [
     meta: { title: '组件', icon: 'el-icon-s-help' },
     children: [
       {
+        path: 'tooltip',
+        name: 'tooltip',
+        component: () => import('@/views/hik/tooltip'),
+        meta: { title: 'tooltip', icon: 'table' }
+      },
+      {
         path: 'table2',
         name: 'table2',
         component: () => import('@/views/hik/table'),
