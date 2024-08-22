@@ -16,7 +16,7 @@ export default {
     return {
       list: [
         { transform: 0, left: '40%', top: '31%', id: 1, name: '你好啊' },
-         { transform: 0, left: '45%', top: '30%', id: 2, name: '你好啊的撒旦飒飒的' },
+        { transform: 0, left: '45%', top: '30%', id: 2, name: '你好啊的撒旦飒飒的' },
         { transform: 0, left: '46%', top: '35%', id: 3, name: '你好啊' },
         { transform: 0, left: '49%', top: '39%', id: 4, name: '你好啊的撒旦飒飒的' },
         { transform: 0, left: '52%', top: '55%', id: 5, name: '你' },
@@ -30,11 +30,11 @@ export default {
       const num = (width > 90 ? 90 : width) / 2
       item.transform = `translate(${num}px, 0)`
     })
+    this.fixPosition()
     this.$nextTick(() => {
       const domList = document.getElementsByClassName('item')
       const list = Array.from(domList)
       list.forEach(item => {
-        console.log(item.children[0], item.children[1])
         this.drawLine(item.children[0], item.children[1])
       })
     })
@@ -47,12 +47,10 @@ export default {
       // 起点坐标
       var x1 = obj1.getBoundingClientRect().left + obj1.clientWidth / 2 - xGap
       var y1 = obj1.getBoundingClientRect().top + obj1.clientHeight / 2 - yGap
-      console.log(x1, y1)
 
       // 终点坐标
       var x2 = obj2.getBoundingClientRect().left + obj2.clientWidth / 2 - xGap
       var y2 = obj2.getBoundingClientRect().top + obj2.clientHeight / 2 - yGap
-      console.log(x2, y2)
 
       // 计算连接线长度
       var length = Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1))
@@ -93,10 +91,8 @@ export default {
       const doms = document.getElementsByClassName('text')
       const domList = Array.from(doms)
       domList.forEach((item, index) => {
-        console.log(index)
         if (domList[index] && domList[index + 1]) {
           if (this.checkOverlap(domList[index], domList[index + 1])) {
-            console.log(domList[index], domList[index + 1])
             // 计算不重叠的位置并移动元素2
             this.calculateNonOverlapPosition(domList[index], domList[index + 1])
           }
@@ -145,6 +141,24 @@ export default {
         const newLeft = rect1.right + 10 // 假设间隔为10像素
         // 设置新位置
         element2.style.left = newLeft + 'px'
+      }
+    },
+    test() {
+      const arr = [1, 2, 3, 4]
+      // 遍历数组中的每个元素
+      for (let i = 0; i < arr.length; i++) {
+        // 取出当前元素
+        const current = arr[i]
+        // 对比当前元素和数组中所有其他元素
+        for (let j = i + 1; j < arr.length; j++) {
+          // 取出当前元素
+          const other = arr[j]
+          // 比较两个元素
+          if (current > other) {
+            // 如果当前元素大于其他元素，则交换它们的位置
+            [arr[j], arr[i]] = [arr[i], arr[j]]
+          }
+        }
       }
     }
 
@@ -205,3 +219,4 @@ export default {
   }
 }
 </style>
+fix: bus的调整

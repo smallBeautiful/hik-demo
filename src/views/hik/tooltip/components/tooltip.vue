@@ -1,19 +1,21 @@
 <template>
-  <el-popover
-    size="medium"
-    placement="bottom"
-    width="300"
-    :disabled="textWidth < width"
-    trigger="hover"
-    content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。">
-    <div class="single-hidden" slot="reference">
-      {{ text }}
-    </div>
-  </el-popover>
+  <div ref="dialogRef">
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogVisible"
+      width="30%"
+    >
+      <span>这是一段信息</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="closeHandle">取 消</el-button>
+      </span>
+    </el-dialog>
+  </div>
 </template>
 
 <script>
-import { measureTextWidth } from '@/utils/dom'
+import { Bus } from '@/utils/bus'
+
 export default {
   name: 'Index',
   props: {
@@ -28,14 +30,34 @@ export default {
   },
   data() {
     return {
+      dialogVisible: false
     }
   },
   computed: {
-    textWidth() {
-      return measureTextWidth(this.text) + 0.5
-    }
+  },
+  mounted() {
+    Bus.$on('openDialog', () => {
+      console.log(1)
+      this.open()
+    })
+    Bus.$on('openDialog2', () => {
+      console.log(2)
+      this.open()
+    })
+    Bus.$on('close', () => {
+      this.close()
+    })
   },
   methods: {
+    open() {
+      this.dialogVisible = true
+    },
+    close() {
+      this.dialogVisible = false
+    },
+    closeHandle() {
+      Bus.$emit('close')
+    }
   }
 }
 </script>
