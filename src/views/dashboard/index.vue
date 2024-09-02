@@ -1,15 +1,18 @@
 <template>
   <div class="dashboard-container">
     <div class="box">
-      <div v-for="item in list" :key="item.id" class="item" :style="{ top: item.top, left: item.left }">
-        <div class="decoration" />
-        <div class="text" :style="{ transform: 0 }"> {{ item.name }}</div>
+      <div v-for="item in list" :key="item.id" class="item">
+        <div :style="{ top: item.top, left: item.left, zIndex: 9999 }" class="decoration" />
+        <div class="text" :style="{ top: calc(item.top), left: item.left }"> {{ item.name }}</div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+
+import Logo from '@/layout/components/Sidebar/Logo'
+
 export default {
   name: 'Dashboard',
   data() {
@@ -25,11 +28,13 @@ export default {
     }
   },
   mounted() {
+    // 计算元素宽度
     this.list.forEach(item => {
       const width = this.calculateWidth(item.name)
       const num = (width > 90 ? 90 : width) / 2
       item.transform = `translate(${num}px, 0)`
     })
+    // 位置修复
     this.fixPosition()
     this.$nextTick(() => {
       const domList = document.getElementsByClassName('item')
@@ -40,6 +45,29 @@ export default {
     })
   },
   methods: {
+    calc(percent) {
+      return `calc(${percent} - 80px)`
+    },
+    // 计算元素宽度
+    calculateWidth(text) {
+      // 创建一个临时的span元素
+      const span = document.createElement('span')
+      // 将文本内容设置为span的innerText
+      span.innerText = text
+      // 设置span的样式，这里可以根据你的需要调整样式
+      span.style.visibility = 'hidden'
+      span.style.whiteSpace = 'nowrap'
+      span.style.position = 'absolute'
+      // 将span元素添加到body中，这样才能够计算其宽度
+      document.body.appendChild(span)
+      // 获取span元素的宽度
+      const width = span.offsetWidth
+      // 移除临时的span元素
+      document.body.removeChild(span)
+      // 返回宽度值
+      return width
+    },
+    // 划线
     drawLine(obj1, obj2) {
       const el = document.getElementsByClassName('box')[0].getBoundingClientRect()
       const xGap = el.left + 1
@@ -71,6 +99,7 @@ export default {
       line.setAttribute('style', style)
       document.getElementsByClassName('box')[0].appendChild(line)
     },
+    // 连点
     connectPoints(point1, point2, line) {
       const dx = point2.offsetLeft - point1.offsetLeft
       const dy = point2.offsetTop - point1.offsetTop
@@ -81,12 +110,14 @@ export default {
       line.style.left = (point1.offsetLeft + point1.offsetWidth / 2) + 'px'
       line.style.transform = 'rotate(' + angle + 'deg)'
     },
+    // 划线
     handleLine() {
       const point1 = document.getElementById('point1')
       const point2 = document.getElementById('point2')
       const line = document.getElementById('line')
       this.connectPoints(point1, point2, line)
     },
+    // 位置修复
     fixPosition() {
       const doms = document.getElementsByClassName('text')
       const domList = Array.from(doms)
@@ -99,24 +130,7 @@ export default {
         }
       })
     },
-    calculateWidth(text) {
-      // 创建一个临时的span元素
-      const span = document.createElement('span')
-      // 将文本内容设置为span的innerText
-      span.innerText = text
-      // 设置span的样式，这里可以根据你的需要调整样式
-      span.style.visibility = 'hidden'
-      span.style.whiteSpace = 'nowrap'
-      span.style.position = 'absolute'
-      // 将span元素添加到body中，这样才能够计算其宽度
-      document.body.appendChild(span)
-      // 获取span元素的宽度
-      const width = span.offsetWidth
-      // 移除临时的span元素
-      document.body.removeChild(span)
-      // 返回宽度值
-      return width
-    },
+    // 判断两个元素是否重叠
     checkOverlap(element1, element2) {
       // 获取元素1的位置和尺寸信息
       const rect1 = element1.getBoundingClientRect()
@@ -129,50 +143,30 @@ export default {
         rect1.bottom < rect2.top ||
         rect1.top > rect2.bottom)
     },
+    // 计算不重叠的位置并移动元素2
     calculateNonOverlapPosition(element1, element2) {
+      const parentDistance = document.getElementsByClassName('box')[0].getBoundingClientRect().left
       // 获取元素1的位置和尺寸信息
-      const rect1 = element1.getBoundingClientRect()
+      // const rect1 = element1.getBoundingClientRect()
       // 获取元素2的位置和尺寸信息
-      // const rect2 = element2.getBoundingClientRect()
-
+      const rect2 = element1.getBoundingClientRect()
       // 如果元素重叠，计算不重叠的位置
       if (this.checkOverlap(element1, element2)) {
         // 移动元素2到元素1的右侧
-        const newLeft = rect1.right + 10 // 假设间隔为10像素
+        const newLeft = rect2.right - parentDistance// 假设间隔为10像素
+        console.log(rect2)
+        console.log(rect2.right, parentDistance)
         // 设置新位置
         element2.style.left = newLeft + 'px'
-      }
-    },
-    test() {
-      const arr = [1, 2, 3, 4]
-      // 遍历数组中的每个元素
-      for (let i = 0; i < arr.length; i++) {
-        // 取出当前元素
-        const current = arr[i]
-        // 对比当前元素和数组中所有其他元素
-        for (let j = i + 1; j < arr.length; j++) {
-          // 取出当前元素
-          const other = arr[j]
-          // 比较两个元素
-          if (current > other) {
-            // 如果当前元素大于其他元素，则交换它们的位置
-            [arr[j], arr[i]] = [arr[i], arr[j]]
-          }
-        }
+        // console.log(element2)
       }
     }
-
   }
 }
 </script>
 
 <style lang="scss">
 .element { position: absolute; width: 50px; height: 50px; border-radius: 25px; background-color: yellow; }
-.element_1 { top: 100px; left: 175px; }
-.element_2 { top: 175px; left: 75px; }
-.element_3 { top: 175px; left: 275px; }
-.element_4 { top: 300px; left: 100px; }
-.element_5 { top: 300px; left: 250px; }
 .line {
   position: absolute;
   border-bottom: 2px solid black;
@@ -188,11 +182,11 @@ export default {
       border: 1px solid #eee;
       border-radius: 4px;
       .item {
-        position: absolute;
-        top: 0;
-        left: 0;
+        //position: absolute;
+        //top: 0;
+        //left: 0;
         .decoration {
-          position: relative;
+          position: absolute;
           z-index: 2;
           width: 14px;
           height: 14px;
@@ -200,7 +194,7 @@ export default {
           border-radius: 50%;
         }
         .text {
-          position: relative;
+          position: absolute;
           z-index: 2;
           top: -80px;
           //-webkit-transform: translate(-42%, 0);
