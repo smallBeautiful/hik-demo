@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import {
+  Upload,
   Pagination,
   Dialog,
   Autocomplete,
@@ -88,4 +89,5 @@ Vue.use(Container)
 Vue.use(Scrollbar)
 Vue.use(Option)
 Vue.use(Cascader)
+Vue.use(Upload)
 Vue.use(Loading.directive)
