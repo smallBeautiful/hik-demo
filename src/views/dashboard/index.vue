@@ -1,42 +1,138 @@
 <template>
-  <el-upload
-    ref="upload"
-    action=""
-    :auto-upload="false"
-    :on-change="handleChange"
-    :file-list="fileList"
-  >
-    <el-button slot="trigger" size="small" type="primary">选择文件</el-button>
-    <el-button size="small" type="success" @click="downloadFile">下载文件</el-button>
-  </el-upload>
+  <el-table
+    class="table-scroll"
+    :data="tableData"
+    max-height="250">
+    <el-table-column
+      fixed
+      prop="date"
+      label="日期"
+      width="150">
+    </el-table-column>
+    <el-table-column
+      prop="name"
+      label="姓名"
+      width="120">
+    </el-table-column>
+    <el-table-column
+      prop="province"
+      label="省份"
+      width="120">
+    </el-table-column>
+    <el-table-column
+      prop="city"
+      label="市区"
+      width="120">
+    </el-table-column>
+    <el-table-column
+      prop="address"
+      label="地址"
+      width="300">
+    </el-table-column>
+    <el-table-column
+      prop="zip"
+      label="邮编"
+      width="120">
+    </el-table-column>
+    <el-table-column
+      fixed="right"
+      label="操作"
+      width="120">
+      <template slot-scope="scope">
+        <el-button
+          @click.native.prevent="deleteRow(scope.$index, tableData)"
+          type="text"
+          size="small">
+          移除
+        </el-button>
+      </template>
+    </el-table-column>
+  </el-table>
 </template>
 
 <script>
 export default {
-  data() {
-    return {
-      fileList: []
+  methods: {
+    deleteRow(index, rows) {
+      rows.splice(index, 1);
     }
   },
-  methods: {
-    handleChange(file, fileList) {
-      // 更新 fileList，当文件被选择或移除时
-      this.fileList = fileList
-    },
-    downloadFile() {
-      // 假设你只想下载 fileList 中的第一个文件
-      const file = this.fileList[0]
-
-      if (file) {
-        const blob = file.raw // 获取文件的原始 Blob 对象
-        const url = URL.createObjectURL(blob) // 创建临时 URL
-        const a = document.createElement('a') // 创建一个下载链接
-        a.href = url // 设置下载链接
-        a.download = file.name // 设置下载文件名
-        a.click() // 触发下载
-        URL.revokeObjectURL(url) // 释放 URL 对象
-      }
+  data() {
+    return {
+      tableData: [{
+        date: '2016-05-03',
+        name: '王小虎',
+        province: '上海',
+        city: '普陀区',
+        address: '上海市普陀区金沙江路 1518 弄',
+        zip: 200333
+      }, {
+        date: '2016-05-02',
+        name: '王小虎',
+        province: '上海',
+        city: '普陀区',
+        address: '上海市普陀区金沙江路 1518 弄',
+        zip: 200333
+      }, {
+        date: '2016-05-04',
+        name: '王小虎',
+        province: '上海',
+        city: '普陀区',
+        address: '上海市普陀区金沙江路 1518 弄',
+        zip: 200333
+      }, {
+        date: '2016-05-01',
+        name: '王小虎',
+        province: '上海',
+        city: '普陀区',
+        address: '上海市普陀区金沙江路 1518 弄',
+        zip: 200333
+      }, {
+        date: '2016-05-08',
+        name: '王小虎',
+        province: '上海',
+        city: '普陀区',
+        address: '上海市普陀区金沙江路 1518 弄',
+        zip: 200333
+      }, {
+        date: '2016-05-06',
+        name: '王小虎',
+        province: '上海',
+        city: '普陀区',
+        address: '上海市普陀区金沙江路 1518 弄',
+        zip: 200333
+      }, {
+        date: '2016-05-07',
+        name: '王小虎',
+        province: '上海',
+        city: '普陀区',
+        address: '上海市普陀区金沙江路 1518 弄',
+        zip: 200333
+      }]
     }
   }
 }
 </script>
+<style lang="scss">
+.table-scroll {
+  width: 800px;
+  max-height: 260px;
+  .el-table__body-wrapper {
+    &::-webkit-scrollbar {
+      width: 16px;
+    }
+    &::-webkit-scrollbar-track {
+      //background-color: #f1f1f1;
+      //border-radius: 4px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: #888;
+      border-radius: 10px;
+      border: 3px solid #f1f1f1;
+    }
+    &::-webkit-scrollbar-thumb:hover {
+      background-color: #555;
+    }
+  }
+}
+</style>
