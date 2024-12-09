@@ -5,7 +5,9 @@ const { showSettings, fixedHeader, sidebarLogo } = defaultSettings
 const state = {
   showSettings: showSettings,
   fixedHeader: fixedHeader,
-  sidebarLogo: sidebarLogo
+  sidebarLogo: sidebarLogo,
+  treeValue: [],
+  treeValue2: [],
 }
 
 const mutations = {
