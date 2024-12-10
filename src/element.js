@@ -45,9 +45,13 @@ import {
   Notification,
   Cascader,
   Option,
-  Drawer
+  Drawer,
+  Tabs,
+  TabPane
 } from 'element-ui'
 
+Vue.use(Tabs)
+Vue.use(TabPane)
 Vue.use(Pagination)
 Vue.use(Link)
 Vue.use(Dialog)

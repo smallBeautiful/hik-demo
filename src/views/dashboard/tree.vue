@@ -1,119 +1,120 @@
 <template>
-    <div>
-        {{ treeValue2 }}
-        <el-select @visible-change="handleVisibleChange" collapse-tags multiple v-model="treeValue" placeholder="请选择">
-            <el-option v-model="value">
-                <el-tree
-                    ref="tree"
-                    :props="props"
-                    :load="loadNode"
-                    lazy
-                    :data="data"
-                    show-checkbox
-                    node-key="id"
-                    @check="handleCheck">
-                </el-tree>
-            </el-option>
-        </el-select>
-    </div>
-  </template>
-  
-  <script>
-import { log } from '@antv/g2plot/lib/utils';
+  <div class="lazy-tree">
+    <el-tree
+      ref="tree"
+      :props="props"
+      :load="loadNode"
+      lazy
+      show-checkbox
+      node-key="id"
+      :default-checked-keys="checkedKeys"
+      @check="handleCheck"
+      @check-change="handleCheckChange">
+    </el-tree>
+  </div>
+</template>
 
-  export default {
-    computed: {
-      treeValue: {
-        get() {
-          return this.$store.state.settings.treeValue;
-        },
-        set(value) {
-        //   this.$store.dispatch('settings/changeSetting', { key: 'treeValue', value });
-        }
-      },
-      treeValue2: {
-        get() {
-          return this.$store.state.settings.treeValue2;
-        },
-        set(value) {
-        //   this.$store.dispatch('settings/changeSetting', { key: 'treeValue', value });
-        }
+<script>
+import { mapState, mapActions } from 'vuex'
+
+export default {
+  name: 'LazyTree',
+  
+  props: {
+    // 用于区分不同实例的唯一标识
+    instanceId: {
+      type: String,
+      required: true
+    }
+  },
+
+  data() {
+    return {
+      props: {
+        label: 'label',
+        children: 'children',
+        isLeaf: 'leaf'
       }
-    },
-    methods: {
-      handleVisibleChange(value) {
-        console.log('value', value);
-        console.log(this.treeValue2)
-        this.$refs.tree.setCheckedKeys(this.treeValue2);
-      },
-      handleCheck(data) {
-        // 获取选中节点
-        const checkedData = this.$refs.tree.getCheckedNodes();
-        console.log(checkedData)
-        if (!checkedData.length) {
-            this.$store.dispatch('settings/changeSetting', { key: 'treeValue', value: [] });
-            this.$store.dispatch('settings/changeSetting', { key: 'treeValue2', value: [] });
-        } else {
-            this.$store.dispatch('settings/changeSetting', { key: 'treeValue', value: checkedData.map(item => item.name) });
-            this.$store.dispatch('settings/changeSetting', { key: 'treeValue2', value: checkedData.map(item => item.id) });
-        }
-        console.log('所有选中的节点:', checkedData);
-      },
-      deleteRow(index, rows) {
-        rows.splice(index, 1);
-      },
-      // 懒加载数据方法
-      loadNode(node, resolve) {
-        console.log('loadNode');
-        if (node.level > 3) return resolve([]);
+    }
+  },
+
+  computed: {
+    ...mapState('tree', ['checkedKeys'])
+  },
+
+  methods: {
+    ...mapActions('tree', ['loadNodeData', 'updateCheckedKeys']),
+
+    // 懒加载节点数据
+    async loadNode(node, resolve) {
+      if (node.level > 3) {
+        resolve([])
+        return
+      }
+
+      try {
+        const parentId = node.level === 0 ? 'root' : node.data.id
+        const data = await this.loadNodeData({
+          parentId,
+          level: node.level
+        })
         
-        // 模拟异步加载数据
-        setTimeout(() => {
-          const data = [
-            { name: `子节点1`, id: node.level * 10 },
-            { name: `子节点2`, id: node.level * 10 + 1 }
-          ];
-          resolve(data);
-        }, 100);
-      },
-      // 更新完整树数据
-    updateFullTreeData(parentId, childrenData) {
-      const updateNode = (nodes) => {
-        for (let node of nodes) {
-          if (node.id === parentId) {
-            node.children = childrenData;
-            return true;
-          }
-          if (node.children) {
-            if (updateNode(node.children)) return true;
-          }
+        // 如果是最后一级，标记为叶子节点
+        if (node.level === 3) {
+          data.forEach(item => {
+            item.leaf = true
+          })
         }
-        return false;
-      };
-      
-      updateNode(this.fullTreeData);
-    },
-    },
-    data() {
-      return {
-        data: [
-            { name: '一级节点1', id: 1 },
-            { name: '一级节点2', id: 2 }
-        ],
-        value: '',
-        value2: [],
-        value3: '111',
-        props: {
-          label: 'name',
-          children: 'children',
-          isLeaf: 'leaf'
-        }
+        
+        resolve(data)
+      } catch (error) {
+        console.error('加载节点失败:', error)
+        resolve([])
       }
+    },
+
+    // 节点选中状态变化
+    handleCheck(data, { checkedKeys }) {
+      this.updateCheckedKeys(checkedKeys)
+    },
+
+    // 节点选中状态变化（包括父节点）
+    handleCheckChange(data, checked, indeterminate) {
+      // 获取当前所有选中的节点key
+      const checkedKeys = this.$refs.tree.getCheckedKeys()
+      this.updateCheckedKeys(checkedKeys)
+    },
+
+    // 设置选中状态
+    setCheckedKeys(keys) {
+      this.$refs.tree.setCheckedKeys(keys)
+    },
+
+    // 获取选中的节点数据
+    getCheckedNodes() {
+      return this.$refs.tree.getCheckedNodes()
+    }
+  },
+
+  // 监听选中状态变化
+  watch: {
+    checkedKeys: {
+      handler(newKeys) {
+        // 确保组件已挂载
+        this.$nextTick(() => {
+          if (this.$refs.tree) {
+            this.$refs.tree.setCheckedKeys(newKeys)
+          }
+        })
+      },
+      immediate: true
     }
   }
-  </script>
-  <style lang="scss">
-    .el-select-dropdown__item {
-        height: auto;
-    }
-  </style>   
+}
+</script>
+
+<style lang="scss" scoped>
+.lazy-tree {
+  padding: 10px;
+}
+</style>
