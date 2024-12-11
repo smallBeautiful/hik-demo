@@ -7,6 +7,7 @@
       :placeholder="placeholder"
       :clearable="clearable"
       @clear="handleClear"
+      :popper-class="`lazy-tree-select-popper-${instanceId}`"
       @visible-change="handleVisibleChange">
       <!-- <el-option 
         v-for="item in selectedOptions"
@@ -35,6 +36,8 @@
 </template>
 
 <script>
+import { log } from '@antv/g2plot/lib/utils';
+
 export default {
   name: 'LazyTreeSelect',
   
@@ -125,6 +128,15 @@ export default {
       if (visible) {
         this.$nextTick(() => {
           this.updateTreeCheckedState()
+          setTimeout(() => {
+              const selectDropdown = document.querySelector(`.lazy-tree-select-popper-${this.instanceId}`)
+              if (selectDropdown) {
+                const scrollWrapper = selectDropdown.querySelector('.el-scrollbar__wrap')
+                if (scrollWrapper) {
+                  scrollWrapper.scrollTop = scrollWrapper.scrollHeight
+                }
+              }
+            }, 0)
         })
       }
     },
@@ -132,7 +144,7 @@ export default {
     updateTreeCheckedState() {
       if (this.$refs.tree) {
         this.$refs.tree.setCheckedKeys(this.checkedKeys)
-        this.$refs.tree.setExpandedKeys(this.expandedKeys)
+        // this.$refs.tree.setExpandedKeys(this.expandedKeys)
         this.updateSelectedOptions()
       }
     },
@@ -174,8 +186,9 @@ export default {
     },
 
     handleNodeCollapse(node) {
-      const expandedKeys = this.expandedKeys.filter(key => key !== node.id)
-      this.$store.dispatch(`${this.storeNamespace}/updateExpandedKeys`, expandedKeys)
+      // const expandedKeys = this.expandedKeys.filter(key => key !== node.id)
+      // console.log('expandedKeys', expandedKeys)
+      // this.$store.dispatch(`${this.storeNamespace}/updateExpandedKeys`, expandedKeys)
     },
 
     handleClear() {
@@ -229,7 +242,7 @@ export default {
       handler(newKeys) {
         this.$nextTick(() => {
           if (this.$refs.tree) {
-            this.$refs.tree.setExpandedKeys(newKeys)
+            // this.$refs.tree.setExpandedKeys(newKeys)
           }
         })
       },
@@ -258,7 +271,7 @@ export default {
   .el-tree {
     padding: 10px;
     min-width: 250px;
-    max-height: 300px;
+    max-height: 100px;
     overflow-y: auto;
   }
 }
