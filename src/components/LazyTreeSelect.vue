@@ -6,8 +6,8 @@
       collapse-tags
       :placeholder="placeholder"
       :clearable="clearable"
-      @clear="handleClear"
       :popper-class="`lazy-tree-select-popper-${instanceId}`"
+      @clear="handleClear"
       @visible-change="handleVisibleChange">
       <!-- <el-option 
         v-for="item in selectedOptions"
@@ -36,8 +36,6 @@
 </template>
 
 <script>
-import { log } from '@antv/g2plot/lib/utils';
-
 export default {
   name: 'LazyTreeSelect',
   
@@ -125,33 +123,50 @@ export default {
     },
 
     handleVisibleChange(visible) {
-      if (visible) {
-        this.$nextTick(() => {
-          this.updateTreeCheckedState()
-          setTimeout(() => {
-              const selectDropdown = document.querySelector(`.lazy-tree-select-popper-${this.instanceId}`)
-              if (selectDropdown) {
-                const scrollWrapper = selectDropdown.querySelector('.el-scrollbar__wrap')
-                if (scrollWrapper) {
-                  scrollWrapper.scrollTop = scrollWrapper.scrollHeight
+    if (visible) {
+      this.$nextTick(async () => {
+        if (this.$refs.tree) {
+          this.$refs.tree.setCheckedKeys(this.checkedKeys)
+          
+          const checkedNodes = this.$refs.tree.getCheckedNodes()
+          const paths = []
+          
+          for (const node of checkedNodes) {
+            const currentNode = this.$refs.tree.getNode(node.id)
+            if (currentNode) {
+              let parent = currentNode.parent
+              while (parent && parent.level !== undefined && parent.data) { // 添加 parent.data 检查
+                if (parent.data.id) { // 添加 id 检查
+                  paths.push(parent.data.id)
                 }
+                parent = parent.parent
               }
-            }, 0)
-        })
-      }
-    },
+            }
+          }
+          
+          if (paths.length > 0) {
+            const newExpandedKeys = [...new Set([...this.expandedKeys, ...paths])]
+            await this.$store.dispatch(`${this.storeNamespace}/updateExpandedKeys`, newExpandedKeys)
+          }
+          
+          this.updateSelectedOptions()
+        }
+      })
+    }
+  },
 
     updateTreeCheckedState() {
       if (this.$refs.tree) {
         this.$refs.tree.setCheckedKeys(this.checkedKeys)
-        // this.$refs.tree.setExpandedKeys(this.expandedKeys)
         this.updateSelectedOptions()
       }
     },
 
     updateSelectedOptions() {
-      const checkedNodes = this.$refs.tree ? this.$refs.tree.getCheckedNodes() : []
-      const halfCheckedNodes = this.$refs.tree ? this.$refs.tree.getHalfCheckedNodes() : []
+      if (!this.$refs.tree) return
+      
+      const checkedNodes = this.$refs.tree.getCheckedNodes()
+      const halfCheckedNodes = this.$refs.tree.getHalfCheckedNodes()
       
       const allSelectedNodes = [...checkedNodes, ...halfCheckedNodes]
       
@@ -172,23 +187,64 @@ export default {
 
     handleCheck(data, { checkedNodes, checkedKeys, halfCheckedNodes, halfCheckedKeys }) {
       this.$store.dispatch(`${this.storeNamespace}/updateCheckedState`, {
-        checkedKeys,
-        checkedNodes,
-        halfCheckedKeys
-      })
-      
+      checkedKeys,
+      checkedNodes,
+      halfCheckedKeys
+    })
+    
+    if (data && data.id) {
+      const node = this.$refs.tree.getNode(data.id)
+      if (node) {
+          const path = []
+          let currentNode = node
+          while (currentNode.parent && currentNode.parent.level !== undefined && currentNode.parent.data) { // 添加 parent.data 检查
+            if (currentNode.parent.data.id) { // 添加 id 检查
+              path.unshift(currentNode.parent.data.id)
+            }
+            currentNode = currentNode.parent
+          }
+          
+          if (path.length > 0) {
+            const newExpandedKeys = [...new Set([...this.expandedKeys, ...path])]
+            this.$store.dispatch(`${this.storeNamespace}/updateExpandedKeys`, newExpandedKeys)
+          }
+        }
+      }
       this.updateSelectedOptions()
     },
 
-    handleNodeExpand(node) {
-      const expandedKeys = [...this.expandedKeys, node.id]
-      this.$store.dispatch(`${this.storeNamespace}/updateExpandedKeys`, expandedKeys)
+    handleNodeExpand(data) {
+      if (!data || !data.id) return
+      const newExpandedKeys = [...this.expandedKeys]
+      if (!newExpandedKeys.includes(data.id)) {
+        newExpandedKeys.push(data.id)
+        this.$store.dispatch(`${this.storeNamespace}/updateExpandedKeys`, newExpandedKeys)
+      }
     },
 
-    handleNodeCollapse(node) {
-      // const expandedKeys = this.expandedKeys.filter(key => key !== node.id)
-      // console.log('expandedKeys', expandedKeys)
-      // this.$store.dispatch(`${this.storeNamespace}/updateExpandedKeys`, expandedKeys)
+    handleNodeCollapse(data) {
+      if (!data || !data.id) return
+      let newExpandedKeys = [...this.expandedKeys]
+      
+      // 移除当前节点的展开状态
+      newExpandedKeys = newExpandedKeys.filter(key => key !== data.id)
+      
+      // 移除所有子节点的展开状态
+      const removeChildKeys = (node) => {
+        if (node.childNodes) {
+          node.childNodes.forEach(child => {
+            newExpandedKeys = newExpandedKeys.filter(key => key !== child.data.id)
+            removeChildKeys(child)
+          })
+        }
+      }
+      
+      const node = this.$refs.tree.getNode(data.id)
+      if (node) {
+        removeChildKeys(node)
+      }
+      
+      this.$store.dispatch(`${this.storeNamespace}/updateExpandedKeys`, newExpandedKeys)
     },
 
     handleClear() {
@@ -216,6 +272,7 @@ export default {
 
     reset() {
       this.handleClear()
+      this.$store.dispatch(`${this.storeNamespace}/updateExpandedKeys`, [])
     }
   },
 
@@ -223,7 +280,10 @@ export default {
     checkedKeys: {
       handler(newKeys) {
         this.$nextTick(() => {
-          this.updateTreeCheckedState()
+          if (this.$refs.tree) {
+            this.$refs.tree.setCheckedKeys(newKeys)
+            this.updateSelectedOptions()
+          }
         })
       },
       immediate: true
@@ -231,21 +291,12 @@ export default {
     
     storeSelectedOptions: {
       handler(newOptions) {
-        this.selectedOptions = newOptions
-        this.selectedValues = this.storeSelectedValues
+        if (JSON.stringify(this.selectedOptions) !== JSON.stringify(newOptions)) {
+          this.selectedOptions = newOptions
+          this.selectedValues = this.storeSelectedValues
+        }
       },
       deep: true,
-      immediate: true
-    },
-
-    expandedKeys: {
-      handler(newKeys) {
-        this.$nextTick(() => {
-          if (this.$refs.tree) {
-            // this.$refs.tree.setExpandedKeys(newKeys)
-          }
-        })
-      },
       immediate: true
     }
   }
@@ -271,7 +322,7 @@ export default {
   .el-tree {
     padding: 10px;
     min-width: 250px;
-    max-height: 100px;
+    max-height: 300px;
     overflow-y: auto;
   }
 }
