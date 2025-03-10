@@ -17,6 +17,7 @@
     "@antv/data-set": "^0.11.8",
     "@antv/g2": "^3.5.1",
     "@antv/g2plot": "^2.4.22",
+    "@babel/polyfill": "^7.12.1",
     "axios": "0.18.1",
     "babel-polyfill": "^6.26.0",
     "chokidar": "^3.5.3",
@@ -28,6 +29,7 @@
     "normalize.css": "7.0.0",
     "nprogress": "0.2.0",
     "path-to-regexp": "2.4.0",
+    "regenerator-runtime": "^0.13.11",
     "vhb-table": "^0.0.8",
     "vue": "2.6.10",
     "vue-happy-scroll": "^2.1.1",
@@ -64,7 +66,8 @@
   },
   "browserslist": [
     "> 1%",
-    "last 2 versions"
+    "last 2 versions",
+    "not ie <= 11"
   ],
   "engines": {
     "node": ">=8.9",
