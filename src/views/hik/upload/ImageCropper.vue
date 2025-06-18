@@ -2,6 +2,7 @@
   <div class="image-cropper-container">
     <!-- 选择图片按钮 -->
     <el-upload
+      :action="action"
       class="upload-btn"
       :show-file-list="false"
       :before-upload="beforeUpload"
@@ -14,55 +15,65 @@
     <el-dialog
       title="图片裁剪"
       :visible.sync="dialogVisible"
-      width="800px"
+      width="900px"
       :before-close="handleClose"
     >
-      <div class="cropper-container">
-        <vue-cropper
-          ref="cropper"
-          :img="cropperImage"
-          :output-size="1"
-          :output-type="'png'"
-          :info="true"
-          :full="true"
-          :can-move="true"
-          :can-scale="true"
-          :auto-crop="true"
-          :fixed="false"
-          :fixed-number="[1, 1]"
-          :center-box="true"
-          :info-true="true"
-          :high="true"
-          :rotatable="true"
-          :zoomable="true"
-          :scalable="true"
-          :crop-box-movable="true"
-          :crop-box-resizable="true"
-        />
+      <div class="cropper-dialog-body">
+        <!-- 左侧裁剪区 -->
+        <div class="cropper-left">
+          <vue-cropper
+            ref="cropper"
+            :fixed="true"
+            :fixed-number="[1, 1]"
+            :img="cropperImage"
+            :output-size="1"
+            :output-type="'png'"
+            :info="true"
+            :full="true"
+            :can-move="true"
+            :can-scale="true"
+            :auto-crop="true"
+            :center-box="true"
+            :info-true="true"
+            :high="true"
+            :rotatable="true"
+            :zoomable="true"
+            :scalable="true"
+            :crop-box-movable="true"
+            :crop-box-resizable="true"
+            :preview="'.cropper-preview'"
+            style="height: 350px; width: 350px;"
+            @realTime="realTime"
+          />
+        </div>
+        <!-- 右侧实时预览区 -->
+        <div class="cropper-right">
+          <div class="cropper-preview-title">实时预览</div>
+          <div class="cropper-preview">
+            <div v-html="html" />
+          </div>
+        </div>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="cropImage">确 定</el-button>
       </span>
     </el-dialog>
-
-    <!-- 预览区域 -->
-    <div v-if="croppedImage" class="preview-container">
-      <div class="preview-wrapper">
-        <img :src="croppedImage" class="preview-image">
-        <div class="preview-mask">
-          <el-button
-            type="danger"
-            icon="el-icon-delete"
-            circle
-            @click="removeImage"
-          />
-        </div>
-      </div>
-      <div v-if="uploadStatus" class="upload-status">
-        <el-tag :type="uploadStatus.type">{{ uploadStatus.message }}</el-tag>
+    <div class="preview-wrapper">
+      <img :src="previewImage" class="preview-image">
+      <div class="preview-mask">
+        <el-button
+          type="danger"
+          icon="el-icon-delete"
+          circle
+          @click="removeImage"
+        />
       </div>
     </div>
+    <div v-if="uploadStatus" class="upload-status">
+      <el-tag :type="uploadStatus.type">{{ uploadStatus.message }}</el-tag>
+    </div>
+  </div>
   </div>
 </template>
 
@@ -76,14 +87,22 @@ export default {
   },
   data() {
     return {
+      action: 'https://jsonplaceholder.typicode.com/posts/',
       dialogVisible: false,
       cropperImage: '',
       croppedImage: '',
       croppedBlob: null,
-      uploadStatus: null
+      uploadStatus: null,
+      previewImage: '',
+      html: ''
     }
   },
   methods: {
+    realTime(data) {
+      console.log('realTime', data)
+      this.previewImage = data.url
+      this.html = data.html
+    },
     // 移除图片
     removeImage() {
       this.croppedImage = ''
@@ -183,9 +202,39 @@ export default {
     padding: 20px;
   }
 
-  .cropper-container {
+  .cropper-dialog-body {
+    display: flex;
     height: 400px;
-    width: 100%;
+  }
+
+  .cropper-left {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .cropper-right {
+    flex: 1;
+    min-width: 0;
+    padding-left: 24px;
+    display: block;
+  }
+
+  .cropper-preview-title {
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+
+  .cropper-preview {
+    /* width: 200px;
+    height: 200px;
+    border: 1px solid #eee;
+    background: #fafafa;
+    overflow: hidden;
+    margin: 0 auto; */
   }
 
   .preview-container {
