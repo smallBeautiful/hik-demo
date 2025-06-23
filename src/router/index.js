@@ -235,6 +235,12 @@ export const constantRoutes = [
         name: 'winname2',
         component: () => import('@/views/hik/winname2'),
         meta: { title: 'winname2', icon: 'table' }
+      },
+      {
+        path: 'selectAll',
+        name: 'selectAll',
+        component: () => import('@/views/hik/selectAll'),
+        meta: { title: 'winname2', icon: 'table' }
       }
     ]
   },
