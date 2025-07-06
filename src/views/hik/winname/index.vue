@@ -1,35 +1,42 @@
 <template>
-  <div>
-    <div>winname</div>
-    <el-button @click="open">open</el-button>
-    <el-button @click="close">close</el-button>
-  </div>
+  <FilterPanel :groups="filterGroups" @update:selected="onSelected" />
 </template>
 
 <script>
+import FilterPanel from '@/components/FilterPanel.vue';
+
 export default {
-  name: 'Index',
+  components: { FilterPanel },
   data() {
     return {
-      winname: ''
-    }
-  },
-  mounted() {
-    window.onbeforeunload = () => {
-      this.winname && this.winname.close()
-    }
+      filterGroups: [
+        {
+          key: 'fileType',
+          title: '文件类型',
+          multiSelect: true,
+          options: [
+            { label: '承诺函', value: 'commitment', count: 12 },
+            { label: '澄清函&说明函', value: 'clarification', count: 12 },
+            // ...
+          ]
+        },
+        {
+          key: 'tags',
+          title: '标签',
+          multiSelect: true,
+          options: [
+            { label: '出口管制条例（EAR）', value: 'ear', count: 12 },
+            // ...
+          ]
+        },
+        // ...
+      ]
+    };
   },
   methods: {
-    open() {
-      this.winname = window.open('http://localhost:9528/#/hik/winname2')
-    },
-    close() {
-      this.winname && this.winname.close()
+    onSelected(selected) {
+      console.log('选中的筛选项：', selected);
     }
   }
-}
+};
 </script>
-
-<style scoped>
-
-</style>
