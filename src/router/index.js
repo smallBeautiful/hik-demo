@@ -241,6 +241,12 @@ export const constantRoutes = [
         name: 'selectAll',
         component: () => import('@/views/hik/selectAll'),
         meta: { title: 'winname2', icon: 'table' }
+      },
+      {
+        path: 'searchScroll',
+        name: 'searchScroll',
+        component: () => import('@/views/hik/scroll/search-scroll.vue'),
+        meta: { title: 'searchScroll', icon: 'table' }
       }
     ]
   },
