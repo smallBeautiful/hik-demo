@@ -38,6 +38,13 @@ export const constantRoutes = [
   },
 
   {
+    path: '/searchScroll',
+    name: 'searchScroll',
+    component: () => import('@/views/hik/scroll/search-scroll.vue'),
+    meta: { title: 'searchScroll', icon: 'table' }
+  },
+
+  {
     path: '/404',
     component: () => import('@/views/404'),
     hidden: true
