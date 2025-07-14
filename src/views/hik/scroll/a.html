@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sticky背景穿透解决方案</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      overflow-x: hidden;
+    }
+
+    /* 方法1：双背景层解决方案 */
+    .solution-1 {
+      min-height: 100vh;
+      padding: 20px;
+      background: linear-gradient(135deg, #6e8efb, #a777e3);
+      color: white;
+    }
+
+    .parent-bg {
+      min-height: 200vh;
+      background: url('https://images.unsplash.com/photo-1501854140801-50d01698950b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80') center/cover;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      position: relative;
+    }
+
+    .sticky-header {
+      position: sticky;
+      top: 0;
+      padding: 20px;
+      background: inherit; /* 继承父元素背景 */
+      background: url('https://images.unsplash.com/photo-1501854140801-50d01698950b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80') center/cover;
+      z-index: 100;
+      color: white;
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      border-bottom: 2px solid rgba(255,255,255,0.2);
+    }
+
+    .content {
+      padding: 30px;
+      background: rgba(255, 255, 255, 0.85);
+      color: #333;
+      border-radius: 8px;
+      margin: 20px;
+      line-height: 1.8;
+    }
+
+    /* 方法2：伪元素固定背景解决方案 */
+    .solution-2 {
+      min-height: 100vh;
+      padding: 20px;
+      background: linear-gradient(135deg, #5da8ff, #1370b5);
+      position: relative;
+      margin-top: 50px;
+    }
+
+    .pseudo-bg-container {
+      min-height: 200vh;
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+
+    .pseudo-bg-container::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('https://images.unsplash.com/photo-1476820865390-c52aeebb9891?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80') center/cover;
+      z-index: -1;
+      opacity: 0.9;
+    }
+
+    /* 方法3：分离背景层解决方案 */
+    .solution-3 {
+      min-height: 100vh;
+      padding: 20px;
+      background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+      position: relative;
+      margin-top: 50px;
+    }
+
+    .background-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80') center/cover;
+      z-index: -1;
+      border-radius: 12px;
+    }
+
+    .content-container {
+      position: relative;
+      min-height: 200vh;
+      z-index: 1;
+      padding: 20px;
+    }
+
+    /* 通用样式 */
+    .solution-title {
+      text-align: center;
+      margin: 30px 0;
+      color: white;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      font-size: 2rem;
+    }
+
+    .solution-description {
+      background: rgba(255, 255, 255, 0.9);
+      padding: 20px;
+      border-radius: 8px;
+      margin: 20px;
+      line-height: 1.7;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .solution-description h3 {
+      color: #2c3e50;
+      margin-bottom: 15px;
+      border-bottom: 2px solid #3498db;
+      padding-bottom: 10px;
+    }
+
+    .code-block {
+      background: #2c3e50;
+      color: #ecf0f1;
+      padding: 15px;
+      border-radius: 8px;
+      font-family: monospace;
+      margin: 15px 0;
+      overflow-x: auto;
+    }
+
+    .sticky-demo {
+      margin: 30px auto;
+      max-width: 800px;
+    }
+
+    .scroll-hint {
+      text-align: center;
+      margin-top: 20px;
+      color: rgba(255, 255, 255, 0.8);
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+<div class="solution-1">
+  <h2 class="solution-title">方法1：双背景层解决方案</h2>
+
+  <div class="solution-description">
+    <h3>实现原理</h3>
+    <p>在sticky元素上设置与父元素相同的背景图片，当元素固定时显示自身背景。</p>
+
+    <div class="code-block">
+      .sticky-header {<br>
+      &nbsp;&nbsp;position: sticky;<br>
+      &nbsp;&nbsp;top: 0;<br>
+      &nbsp;&nbsp;background: url('background.jpg') center/cover;<br>
+      &nbsp;&nbsp;/* 其他样式 */<br>
+      }
+    </div>
+
+    <p><strong>优点：</strong>实现简单，兼容性好</p>
+    <p><strong>缺点：</strong>需要重复设置背景图片</p>
+  </div>
+
+  <div class="sticky-demo">
+    <div class="parent-bg">
+      <div class="sticky-header">Sticky 头部 (滚动查看效果)</div>
+      <div class="content">
+        <p>当页面滚动时，这个头部会固定在顶部。注意观察它的背景是如何保持完整的。</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+        <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+      </div>
+    </div>
+    <p class="scroll-hint">↑ 向下滚动查看效果 ↑</p>
+  </div>
+</div>
+
+<div class="solution-2">
+  <h2 class="solution-title">方法2：伪元素固定背景解决方案</h2>
+
+  <div class="solution-description">
+    <h3>实现原理</h3>
+    <p>使用伪元素创建固定背景层，位于内容下方但覆盖整个视口。</p>
+
+    <div class="code-block">
+      .container::before {<br>
+      &nbsp;&nbsp;content: '';<br>
+      &nbsp;&nbsp;position: fixed;<br>
+      &nbsp;&nbsp;top: 0;<br>
+      &nbsp;&nbsp;left: 0;<br>
+      &nbsp;&nbsp;width: 100%;<br>
+      &nbsp;&nbsp;height: 100%;<br>
+      &nbsp;&nbsp;background: url('background.jpg') center/cover;<br>
+      &nbsp;&nbsp;z-index: -1;<br>
+      }
+    </div>
+
+    <p><strong>优点：</strong>背景独立，不需要重复设置</p>
+    <p><strong>缺点：</strong>伪元素无法直接继承父元素背景，需要单独设置</p>
+  </div>
+
+  <div class="sticky-demo">
+    <div class="pseudo-bg-container">
+      <div class="sticky-header">Sticky 头部 (滚动查看效果)</div>
+      <div class="content">
+        <p>这个方法使用伪元素创建了一个固定背景层，解决了sticky元素的背景穿透问题。</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+        <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+      </div>
+    </div>
+    <p class="scroll-hint">↑ 向下滚动查看效果 ↑</p>
+  </div>
+</div>
+
+<div class="solution-3">
+  <h2 class="solution-title">方法3：分离背景层解决方案</h2>
+
+  <div class="solution-description">
+    <h3>实现原理</h3>
+    <p>将背景层与内容层分离，背景层使用绝对定位覆盖整个区域。</p>
+
+    <div class="code-block">
+      &lt;div class="background-layer"&gt;&lt;!-- 背景在这里 --&gt;&lt;/div&gt;<br>
+      &lt;div class="content-container"&gt;<br>
+      &nbsp;&nbsp;&lt;div class="sticky-header"&gt;...&lt;/div&gt;<br>
+      &nbsp;&nbsp;&lt;!-- 其他内容 --&gt;<br>
+      &lt;/div&gt;
+    </div>
+
+    <p><strong>优点：</strong>结构清晰，易于维护</p>
+    <p><strong>缺点：</strong>需要修改HTML结构</p>
+  </div>
+
+  <div class="sticky-demo">
+    <div class="background-layer"></div>
+    <div class="content-container">
+      <div class="sticky-header">Sticky 头部 (滚动查看效果)</div>
+      <div class="content">
+        <p>这个方法通过分离背景层和内容层，从根本上解决了背景穿透问题。</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+        <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+      </div>
+    </div>
+    <p class="scroll-hint">↑ 向下滚动查看效果 ↑</p>
+  </div>
+</div>
+</body>
+</html>
