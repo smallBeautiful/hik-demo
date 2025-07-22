@@ -254,6 +254,12 @@ export const constantRoutes = [
         name: 'searchScroll',
         component: () => import('@/views/hik/scroll/search-scroll.vue'),
         meta: { title: 'searchScroll', icon: 'table' }
+      },
+      {
+        path: 'tableScroll',
+        name: 'tableScroll',
+        component: () => import('@/views/hik/tableScroll'),
+        meta: { title: 'searchScroll', icon: 'table' }
       }
     ]
   },
