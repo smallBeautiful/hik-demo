@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <div id="interval" />
+    <div id="interval" style="width: 500px; height: 400px" />
   </div>
 </template>
 
