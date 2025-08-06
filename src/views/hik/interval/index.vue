@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <div id="interval" style="width: 500px; height: 400px" />
+    <div id="interval" />
   </div>
 </template>
 
@@ -14,21 +14,21 @@ export default {
   methods: {
     renderChart() {
       const data = [
-        { company: 'Apple', type: '整体', value: '30', lineValue: 45 },
-        { company: 'Facebook', type: '整体', value: '35', lineValue: 52 },
-        { company: 'Google', type: '整体', value: '28', lineValue: 38 },
+        { company: 'Apple', type: '整体', value: '30' },
+        { company: 'Facebook', type: '整体', value: '35' },
+        { company: 'Google', type: '整体', value: '28' },
 
-        { company: 'Apple', type: '非技术岗', value: '40', lineValue: 55 },
-        { company: 'Facebook', type: '非技术岗', value: '65', lineValue: 72 },
-        { company: 'Google', type: '非技术岗', value: '47', lineValue: 58 },
+        { company: 'Apple', type: '非技术岗', value: '40' },
+        { company: 'Facebook', type: '非技术岗', value: '65' },
+        { company: 'Google', type: '非技术岗', value: '47' },
 
-        { company: 'Apple', type: '技术岗', value: '23', lineValue: 35 },
-        { company: 'Facebook', type: '技术岗', value: '18', lineValue: 28 },
-        { company: 'Google', type: '技术岗', value: '20', lineValue: 32 },
+        { company: 'Apple', type: '技术岗', value: '23' },
+        { company: 'Facebook', type: '技术岗', value: '18' },
+        { company: 'Google', type: '技术岗', value: '20' },
 
-        { company: 'Apple', type: '技术岗', value: '35', lineValue: 48 },
-        { company: 'Facebook', type: '技术岗', value: '30', lineValue: 42 },
-        { company: 'Google', type: '技术岗', value: '25', lineValue: 38 }
+        { company: 'Apple', type: '技术岗', value: '35' },
+        { company: 'Facebook', type: '技术岗', value: '30' },
+        { company: 'Google', type: '技术岗', value: '25' }
       ]
 
       const chart = new G2.Chart({
@@ -40,12 +40,6 @@ export default {
       chart.source(data)
       chart.scale('value', {
         alias: '占比（%）',
-        max: 75,
-        min: 0,
-        tickCount: 4
-      })
-      chart.scale('lineValue', {
-        alias: '折线值（%）',
         max: 75,
         min: 0,
         tickCount: 4
@@ -65,56 +59,22 @@ export default {
       chart.axis('value', {
         label: {
           textStyle: {
-            fill: '#666'
+            fill: '#000'
           }
         },
         title: {
           offset: 50
         }
       })
-      
-      // 添加右侧坐标轴
-      chart.axis('lineValue', {
-        position: 'right',
-        label: {
-          textStyle: {
-            fill: '#666'
-          }
-        },
-        title: {
-          offset: 50
-        }
-      })
-      
       chart.legend({
         position: 'top-center'
       })
-      
-      // 绘制柱状图
       chart.interval().position('type*value').color('company')
         .opacity(1)
         .adjust([{
           type: 'dodge',
           marginRatio: 1 / 32
         }])
-      
-      // 绘制折线图
-      chart.line().position('type*lineValue').color('company')
-        .shape('smooth')
-        .size(2)
-        .style({
-          strokeOpacity: 0.8
-        })
-      
-      // 添加折线图的点
-      chart.point().position('type*lineValue').color('company')
-        .shape('circle')
-        .size(4)
-        .style({
-          stroke: '#fff',
-          lineWidth: 1
-        })
-      
       chart.render()
     }
   }
