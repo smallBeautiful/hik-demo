@@ -95,6 +95,22 @@ export const constantRoutes = [
   },
 
   {
+    path: '/render',
+    component: Layout,
+    redirect: '/render/h',
+    name: 'h',
+    meta: { title: 'h函数', icon: 'el-icon-s-help' },
+    children: [
+      {
+        path: 'h',
+        name: 'h',
+        component: () => import('@/views/render/h'),
+        meta: { title: 'h', icon: 'table' }
+      }
+    ]
+  },
+
+  {
     path: '/css2',
     component: Layout,
     redirect: '/css2/ellipsis',
