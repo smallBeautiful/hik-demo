@@ -22,7 +22,7 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm('dynamicValidateForm')">提交</el-button>
-        <el-button @click="resetForm('dynamicValidateForm')">重置</el-button>
+        <el-button @click="resetForm('dynamicValidateForm')">重置1</el-button>
       </el-form-item>
     </el-form>1
   </div>
