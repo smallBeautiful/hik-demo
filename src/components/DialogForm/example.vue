@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <div class="dialog-form-example">
     <div class="filter-container">
       <el-button type="primary" icon="el-icon-plus" @click="handleCreate">
         新增用户
@@ -13,7 +13,6 @@
       <el-table-column prop="email" label="邮箱" />
       <el-table-column prop="phone" label="电话" />
       <el-table-column prop="department" label="部门" />
-      <el-table-column prop="role" label="角色" />
       <el-table-column prop="status" label="状态">
         <template slot-scope="scope">
           <el-tag :type="scope.row.status === 'active' ? 'success' : 'danger'">
@@ -29,21 +28,20 @@
       </el-table-column>
     </el-table>
 
-    <!-- 弹窗表单 -->
-    <el-dialog
+    <!-- 使用弹窗表单组件 -->
+    <DialogForm
+      ref="dialogForm"
       :title="dialogTitle"
-      :visible.sync="dialogVisible"
-      width="600px"
-      :close-on-click-modal="false"
-      @close="handleDialogClose"
+      :value="formData"
+      :rules="formRules"
+      :is-edit="isEdit"
+      :loading="submitLoading"
+      @submit="handleSubmit"
+      @cancel="handleCancel"
+      @close="handleClose"
     >
-      <el-form
-        ref="userForm"
-        :model="formData"
-        :rules="formRules"
-        label-width="100px"
-        label-position="right"
-      >
+      <!-- 自定义表单内容 -->
+      <template #default="{ formData, isEdit }">
         <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="姓名" prop="name">
@@ -122,25 +120,22 @@
             </el-form-item>
           </el-col>
         </el-row>
-      </el-form>
-
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取消</el-button>
-        <el-button type="primary" :loading="submitLoading" @click="handleSubmit">
-          {{ isEdit ? '更新' : '创建' }}
-        </el-button>
-      </div>
-    </el-dialog>
+      </template>
+    </DialogForm>
   </div>
 </template>
 
 <script>
+import DialogForm from './index.vue'
+
 export default {
-  name: 'DialogForm',
+  name: 'DialogFormExample',
+  components: {
+    DialogForm
+  },
   data() {
     return {
       // 弹窗控制
-      dialogVisible: false,
       isEdit: false,
       submitLoading: false,
       
@@ -235,26 +230,14 @@ export default {
     handleCreate() {
       this.isEdit = false
       this.resetForm()
-      this.dialogVisible = true
+      this.$refs.dialogForm.show()
     },
     
     // 编辑用户
     handleEdit(row) {
       this.isEdit = true
-      this.resetForm()
-      // 回显数据
-      this.formData = {
-        id: row.id,
-        name: row.name,
-        email: row.email,
-        phone: row.phone,
-        department: row.department,
-        role: row.role,
-        status: row.status,
-        joinDate: row.joinDate,
-        remark: row.remark
-      }
-      this.dialogVisible = true
+      this.formData = { ...row }
+      this.$refs.dialogForm.show()
     },
     
     // 删除用户
@@ -275,38 +258,41 @@ export default {
     },
     
     // 提交表单
-    handleSubmit() {
-      this.$refs.userForm.validate((valid) => {
-        if (valid) {
-          this.submitLoading = true
-          
-          // 模拟API调用
-          setTimeout(() => {
-            if (this.isEdit) {
-              // 更新用户
-              const index = this.userList.findIndex(item => item.id === this.formData.id)
-              if (index > -1) {
-                this.userList.splice(index, 1, { ...this.formData })
-                this.$message.success('更新成功')
-              }
-            } else {
-              // 新增用户
-              const newUser = {
-                ...this.formData,
-                id: Date.now() // 简单的ID生成
-              }
-              this.userList.unshift(newUser)
-              this.$message.success('创建成功')
-            }
-            
-            this.submitLoading = false
-            this.dialogVisible = false
-          }, 1000)
+    handleSubmit(formData) {
+      this.submitLoading = true
+      
+      // 模拟API调用
+      setTimeout(() => {
+        if (this.isEdit) {
+          // 更新用户
+          const index = this.userList.findIndex(item => item.id === formData.id)
+          if (index > -1) {
+            this.userList.splice(index, 1, { ...formData })
+            this.$message.success('更新成功')
+          }
         } else {
-          this.$message.error('请检查表单信息')
-          return false
+          // 新增用户
+          const newUser = {
+            ...formData,
+            id: Date.now()
+          }
+          this.userList.unshift(newUser)
+          this.$message.success('创建成功')
         }
-      })
+        
+        this.submitLoading = false
+        this.$refs.dialogForm.hide()
+      }, 1000)
+    },
+    
+    // 取消
+    handleCancel() {
+      this.$refs.dialogForm.hide()
+    },
+    
+    // 关闭弹窗
+    handleClose() {
+      this.resetForm()
     },
     
     // 重置表单
@@ -322,24 +308,13 @@ export default {
         joinDate: '',
         remark: ''
       }
-      // 清除验证
-      this.$nextTick(() => {
-        if (this.$refs.userForm) {
-          this.$refs.userForm.clearValidate()
-        }
-      })
-    },
-    
-    // 弹窗关闭处理
-    handleDialogClose() {
-      this.resetForm()
     }
   }
 }
 </script>
 
 <style scoped>
-.app-container {
+.dialog-form-example {
   padding: 20px;
 }
 
@@ -347,34 +322,7 @@ export default {
   margin-bottom: 20px;
 }
 
-.dialog-footer {
-  text-align: right;
-}
-
-/* 表单样式优化 */
-.el-form {
-  padding: 0 20px;
-}
-
-.el-form-item {
-  margin-bottom: 20px;
-}
-
-/* 表格样式优化 */
 .el-table {
   margin-top: 20px;
 }
-
-/* 响应式设计 */
-@media (max-width: 768px) {
-  .el-dialog {
-    width: 95% !important;
-    margin: 0 auto;
-  }
-  
-  .el-col {
-    margin-bottom: 10px;
-  }
-}
 </style>
-
