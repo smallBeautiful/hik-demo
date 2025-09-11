@@ -47,7 +47,9 @@ import {
   Option,
   Drawer,
   Tabs,
-  TabPane
+  TabPane,
+  Divider,
+  Popconfirm
 } from 'element-ui'
 
 Vue.use(Tabs)
@@ -94,4 +96,6 @@ Vue.use(Scrollbar)
 Vue.use(Option)
 Vue.use(Cascader)
 Vue.use(Upload)
+Vue.use(Divider)
+Vue.use(Popconfirm)
 Vue.use(Loading.directive)
