@@ -49,6 +49,9 @@ import {
   Tabs,
   TabPane,
   Switch
+  TabPane,
+  Divider,
+  Popconfirm
 } from 'element-ui'
 
 Vue.use(Tabs)
@@ -96,4 +99,6 @@ Vue.use(Option)
 Vue.use(Cascader)
 Vue.use(Upload)
 Vue.use(Switch)
+Vue.use(Divider)
+Vue.use(Popconfirm)
 Vue.use(Loading.directive)
