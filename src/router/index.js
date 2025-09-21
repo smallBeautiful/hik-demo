@@ -127,6 +127,22 @@ export const constantRoutes = [
   },
 
   {
+    path: '/rma',
+    component: Layout,
+    redirect: '/rma/index',
+    name: '/Rma/index',
+    meta: { title: 'rma', icon: 'el-icon-s-help' },
+    children: [
+      {
+        path: 'editTable',
+        name: 'editTable',
+        component: () => import('@/views/rma/EditTable'),
+        meta: { title: 'editTable', icon: 'table' }
+      }
+    ]
+  },
+
+  {
     path: '/hik',
     component: Layout,
     redirect: '/hik/index',

@@ -47,7 +47,8 @@ import {
   Option,
   Drawer,
   Tabs,
-  TabPane
+  TabPane,
+  Switch
 } from 'element-ui'
 
 Vue.use(Tabs)
@@ -94,4 +95,5 @@ Vue.use(Scrollbar)
 Vue.use(Option)
 Vue.use(Cascader)
 Vue.use(Upload)
+Vue.use(Switch)
 Vue.use(Loading.directive)

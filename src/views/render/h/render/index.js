@@ -42,7 +42,7 @@ export const inputRender = {
       class: 'h-input',
       style: 'width: 200px;',
       props: {
-        value: context.data.attrs['form-data'].value,
+        value: context.data.attrs['form-data'].value
       },
       on: {
         input(val) {
