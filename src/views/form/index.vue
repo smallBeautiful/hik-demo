@@ -8,43 +8,14 @@
       <el-table-column prop="id" label="ID" width="80" align="center" />
       <el-table-column label="角色名称" min-width="160">
         <template slot-scope="scope">
-          <el-link style="position: relative;z-index: 999999;" type="primary" @click="openPreview(scope.row)">{{ scope.row.name }}</el-link>
-
-          <el-drawer
-      title="角色详情"
-      :visible.sync="previewVisible"
-      direction="rtl"
-      size="520px"
-      :modal="false"
-      :wrapperClosable="false"
-      :destroy-on-close="false"
-    >
-      <div class="drawer-body">
-        <el-form label-width="90px">
-          <el-form-item label="ID">
-            <span>{{ previewRow.id }}</span>
-          </el-form-item>
-          <el-form-item label="角色名称">
-            <span>{{ previewRow.name }}</span>
-          </el-form-item>
-          <el-form-item label="备注说明">
-            <span>{{ previewRow.remark || '-' }}</span>
-          </el-form-item>
-          <el-form-item label="权限设置">
-            <el-tree
-              ref="previewTree"
-              :data="permissionTreeDisabled"
-              node-key="id"
-              show-checkbox
-              default-expand-all
-              :props="disabledTreeProps"
-              :expand-on-click-node="false"
-            />
-          </el-form-item>
-        </el-form>
-      </div>
-    </el-drawer>
-
+          <el-tag 
+            :type="previewRow.id === scope.row.id ? 'primary' : 'info'"
+            :effect="previewRow.id === scope.row.id ? 'dark' : 'plain'"
+            style="cursor: pointer; margin-right: 8px;"
+            @click="openPreview(scope.row)"
+          >
+            {{ scope.row.name }}
+          </el-tag>
         </template>
       </el-table-column>
       <el-table-column prop="remark" label="备注" min-width="220" show-overflow-tooltip />
@@ -114,6 +85,41 @@
         <el-button type="primary" :loading="submitting" @click="handleSubmit">提交</el-button>
       </span>
     </el-dialog>
+
+    <el-drawer
+      title="角色详情"
+      :visible.sync="previewVisible"
+      direction="rtl"
+      size="520px"
+      :modal="false"
+      :wrapperClosable="false"
+      :destroy-on-close="false"
+    >
+      <div class="drawer-body">
+        <el-form label-width="90px">
+          <el-form-item label="ID">
+            <span>{{ previewRow.id }}</span>
+          </el-form-item>
+          <el-form-item label="角色名称">
+            <span>{{ previewRow.name }}</span>
+          </el-form-item>
+          <el-form-item label="备注说明">
+            <span>{{ previewRow.remark || '-' }}</span>
+          </el-form-item>
+          <el-form-item label="权限设置">
+            <el-tree
+              ref="previewTree"
+              :data="permissionTreeDisabled"
+              node-key="id"
+              show-checkbox
+              default-expand-all
+              :props="disabledTreeProps"
+              :expand-on-click-node="false"
+            />
+          </el-form-item>
+        </el-form>
+      </div>
+    </el-drawer>
   </div>
   
 </template>

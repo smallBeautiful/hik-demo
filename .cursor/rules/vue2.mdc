@@ -7,3 +7,5 @@ alwaysApply: true
 ---
 本项目使用vue2
 ---
+ui框架为element ui
+---

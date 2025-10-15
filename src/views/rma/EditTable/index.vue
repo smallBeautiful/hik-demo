@@ -4,14 +4,14 @@
 
     <el-table :data="tableData" style="width: 100%">
       <el-table-column prop="name" label="姓名">
-        <template #default="{ row, $index }">
+        <template #default="{ row }">
           <el-input v-if="row.isEditing" v-model="row.name" />
           <span v-else>{{ row.name }}</span>
         </template>
       </el-table-column>
 
       <el-table-column prop="age" label="年龄">
-        <template #default="{ row, $index }">
+        <template #default="{ row }">
           <el-input-number
             v-if="row.isEditing"
             v-model="row.age"
@@ -22,21 +22,21 @@
       </el-table-column>
 
       <el-table-column prop="email" label="邮箱">
-        <template #default="{ row, $index }">
+        <template #default="{ row }">
           <el-input v-if="row.isEditing" v-model="row.email" />
           <span v-else>{{ row.email }}</span>
         </template>
       </el-table-column>
 
       <el-table-column label="操作" width="200">
-        <template #default="{ row, $index }">
+        <template #default="{ row }">
           <div v-if="row.isEditing">
-            <el-button type="success" size="small" @click="saveRow(row, $index)">保存</el-button>
-            <el-button type="warning" size="small" @click="cancelEdit(row, $index)">取消</el-button>
+            <el-button type="success" size="small" @click="saveRow(row)">保存</el-button>
+            <el-button type="warning" size="small" @click="cancelEdit(row)">取消</el-button>
           </div>
           <div v-else>
-            <el-button type="primary" size="small" @click="editRow(row, $index)">编辑</el-button>
-            <el-button type="danger" size="small" @click="deleteRow($index)">删除</el-button>
+            <el-button type="primary" size="small" @click="editRow(row)">编辑</el-button>
+            <el-button type="danger" size="small" @click="deleteRow()">删除</el-button>
           </div>
         </template>
       </el-table-column>

@@ -48,8 +48,7 @@ import {
   Drawer,
   Tabs,
   TabPane,
-  Switch
-  TabPane,
+  Switch,
   Divider,
   Popconfirm
 } from 'element-ui'

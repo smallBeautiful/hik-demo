@@ -150,6 +150,12 @@ export const constantRoutes = [
     meta: { title: '组件', icon: 'el-icon-s-help' },
     children: [
       {
+        path: 'tab',
+        name: 'tab',
+        component: () => import('@/views/hik/tab'),
+        meta: { title: 'tooltip', icon: 'table' }
+      },
+      {
         path: 'tooltip',
         name: 'tooltip',
         component: () => import('@/views/hik/tooltip'),
