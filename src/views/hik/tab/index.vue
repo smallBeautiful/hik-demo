@@ -1,353 +1,275 @@
 <template>
-  <div class="receiving-registration">
-    <!-- 页面标题和操作按钮 -->
-    <div class="page-header">
-      <div class="header-left">
-        <h2 class="page-title">收货登记</h2>
-        <el-link type="primary" class="tab-link">引用申请单录入</el-link>
-      </div>
-      <div class="header-right">
-        <el-button type="primary" @click="handleSubmit">提交</el-button>
-        <el-button @click="handleSave">保存</el-button>
-      </div>
+  <div class="rma-receive-detail">
+    <div class="toolbar">
+      <el-button type="primary" size="mini" @click="onBatchImport">批量导入</el-button>
+      <el-button size="mini" @click="onPrintReceive">打印收货单</el-button>
+      <el-button size="mini" @click="onPrintRepairCode">打印维修单条码</el-button>
     </div>
 
-    <!-- 表单内容 -->
-    <el-form 
-      :model="formData" 
-      :rules="rules" 
-      ref="receivingForm" 
-      label-width="100px"
-      class="receiving-form"
+    <el-table
+      :data="tableData"
+      border
+      size="mini"
+      style="width: 100%"
     >
-      <el-row :gutter="20">
-        <!-- 第一列 -->
-        <el-col :span="8">
-          <el-form-item label="返修类型" prop="repairType" required>
-            <el-radio-group v-model="formData.repairType">
-              <el-radio label="company">公司返修</el-radio>
-              <el-radio label="individual">个人返修</el-radio>
-              <el-radio label="internal">内部送检</el-radio>
-            </el-radio-group>
-          </el-form-item>
+      <el-table-column prop="serialNo" label="序列号/批次号" min-width="140">
+        <template slot-scope="scope">
+          <span v-if="!scope.row._editing">{{ scope.row.serialNo }}</span>
+          <el-input
+            v-else
+            v-model.trim="scope.row.serialNo"
+            size="mini"
+            placeholder="请输入"
+          />
+        </template>
+      </el-table-column>
 
-          <el-form-item label="接修方式" prop="receivingMethod" required>
-            <el-select v-model="formData.receivingMethod" placeholder="请选择" style="width: 100%">
-              <el-option label="上门取件" value="pickup"></el-option>
-              <el-option label="邮寄" value="mail"></el-option>
-              <el-option label="自送" value="self"></el-option>
+      <el-table-column prop="refSerialNo" label="参考序列号" min-width="120">
+        <template slot-scope="scope">
+          <span v-if="!scope.row._editing">{{ scope.row.refSerialNo || '-' }}</span>
+          <el-input
+            v-else
+            v-model.trim="scope.row.refSerialNo"
+            size="mini"
+            placeholder="请输入"
+          />
+        </template>
+      </el-table-column>
+
+      <el-table-column prop="logisticsNo" label="物流号" min-width="120">
+        <template slot-scope="scope">
+          <span v-if="!scope.row._editing">{{ scope.row.logisticsNo || '-' }}</span>
+          <el-input
+            v-else
+            v-model.trim="scope.row.logisticsNo"
+            size="mini"
+            placeholder="请输入"
+          />
+        </template>
+      </el-table-column>
+
+      <el-table-column prop="model" label="产品型号" min-width="180">
+        <template slot-scope="scope">
+          <span v-if="!scope.row._editing">{{ scope.row.model }}</span>
+          <el-select v-else v-model="scope.row.model" size="mini" placeholder="请选择" filterable>
+            <el-option v-for="opt in productOptions" :key="opt" :label="opt" :value="opt" />
+          </el-select>
+        </template>
+      </el-table-column>
+
+      <el-table-column prop="category" label="标识标签" min-width="160">
+        <template slot="header">
+          <div class="th-flex">
+            <span>标识标签</span>
+            <el-tooltip effect="dark" content="A类/ODM/固件版/显点等" placement="top">
+              <i class="el-icon-info th-tip" />
+            </el-tooltip>
+          </div>
+        </template>
+        <template slot-scope="scope">
+          <div v-if="!scope.row._editing" class="tag-wrap">
+            <el-tag size="mini">{{ scope.row.category }}</el-tag>
+            <el-tag v-if="scope.row.source" size="mini" type="info" class="ml8">{{ scope.row.source }}</el-tag>
+            <el-tag v-if="scope.row.version" size="mini" type="warning" class="ml8">{{ scope.row.version }}</el-tag>
+          </div>
+          <div v-else class="edit-flex">
+            <el-select v-model="scope.row.category" size="mini" style="width: 82px" placeholder="类别">
+              <el-option v-for="opt in categoryOptions" :key="opt" :label="opt" :value="opt" />
             </el-select>
-          </el-form-item>
-
-          <el-form-item label="快递单号" prop="expressNumber" required>
-            <el-input v-model="formData.expressNumber" placeholder="请输入"></el-input>
-          </el-form-item>
-
-          <el-form-item label="返回方式" prop="returnMethod" required>
-            <el-radio-group v-model="formData.returnMethod">
-              <el-radio label="original">原路返回</el-radio>
-              <el-radio label="non-original">非原路返回</el-radio>
-            </el-radio-group>
-          </el-form-item>
-
-          <el-form-item label="返回地址" prop="returnAddress" required>
-            <el-row :gutter="10">
-              <el-col :span="16">
-                <el-select v-model="formData.returnAddress" placeholder="请选择" style="width: 100%">
-                  <el-option label="北京市朝阳区" value="beijing"></el-option>
-                  <el-option label="上海市浦东新区" value="shanghai"></el-option>
-                  <el-option label="深圳市南山区" value="shenzhen"></el-option>
-                </el-select>
-              </el-col>
-              <el-col :span="8">
-                <el-button size="small" @click="showReturnAddressDetail">详细地址</el-button>
-              </el-col>
-            </el-row>
-          </el-form-item>
-        </el-col>
-
-        <!-- 第二列 -->
-        <el-col :span="8">
-          <el-form-item label="联系人" prop="contactPerson" required>
-            <el-input v-model="formData.contactPerson" placeholder="请输入"></el-input>
-          </el-form-item>
-
-          <el-form-item label="快递公司" prop="expressCompany" required>
-            <el-row :gutter="10">
-              <el-col :span="18">
-                <el-input v-model="formData.expressCompany" placeholder="请输入"></el-input>
-              </el-col>
-              <el-col :span="6">
-                <el-button size="small" icon="el-icon-search" @click="searchExpressCompany"></el-button>
-              </el-col>
-            </el-row>
-          </el-form-item>
-
-          <el-form-item label="联系人" prop="returnContact" required>
-            <el-select v-model="formData.returnContact" placeholder="请选择" style="width: 100%">
-              <el-option label="张三" value="zhangsan"></el-option>
-              <el-option label="李四" value="lisi"></el-option>
-              <el-option label="王五" value="wangwu"></el-option>
+            <el-select v-model="scope.row.source" size="mini" style="width: 90px" class="ml8" placeholder="来源">
+              <el-option v-for="opt in sourceOptions" :key="opt" :label="opt" :value="opt" />
             </el-select>
-          </el-form-item>
+            <el-select v-model="scope.row.version" size="mini" style="width: 100px" class="ml8" placeholder="版本">
+              <el-option v-for="opt in versionOptions" :key="opt" :label="opt" :value="opt" />
+            </el-select>
+          </div>
+        </template>
+      </el-table-column>
 
-          <el-form-item label="客户地址" prop="customerAddress" required>
-            <el-row :gutter="10">
-              <el-col :span="16">
-                <el-select v-model="formData.customerAddress" placeholder="请选择" style="width: 100%">
-                  <el-option label="北京市海淀区" value="beijing_haidian"></el-option>
-                  <el-option label="上海市徐汇区" value="shanghai_xuhui"></el-option>
-                  <el-option label="深圳市福田区" value="shenzhen_futian"></el-option>
-                </el-select>
-              </el-col>
-              <el-col :span="8">
-                <el-button size="small" @click="showCustomerAddressDetail">详细地址</el-button>
-              </el-col>
-            </el-row>
-          </el-form-item>
+      <el-table-column prop="deliveryUnit" label="出库单位" min-width="100">
+        <template slot-scope="scope">
+          <span v-if="!scope.row._editing">{{ scope.row.deliveryUnit || '-' }}</span>
+          <el-select v-else v-model="scope.row.deliveryUnit" size="mini" placeholder="请选择">
+            <el-option v-for="u in unitOptions" :key="u" :label="u" :value="u" />
+          </el-select>
+        </template>
+      </el-table-column>
 
-          <el-form-item label="收货备注">
-            <el-input 
-              v-model="formData.remarks" 
-              type="textarea" 
-              :rows="3"
-              placeholder="请输入"
-            ></el-input>
-          </el-form-item>
-        </el-col>
+      <el-table-column prop="customerIssue" label="客户反馈故障" min-width="160">
+        <template slot-scope="scope">
+          <span v-if="!scope.row._editing">{{ scope.row.customerIssue || '-' }}</span>
+          <el-input v-else v-model.trim="scope.row.customerIssue" size="mini" placeholder="请输入" />
+        </template>
+      </el-table-column>
 
-        <!-- 第三列 -->
-        <el-col :span="8">
-          <el-form-item label="联系电话" prop="contactPhone" required>
-            <el-input v-model="formData.contactPhone" placeholder="请输入"></el-input>
-          </el-form-item>
+      <el-table-column prop="attachments" label="随机" width="70" align="center">
+        <template slot-scope="scope">
+          <el-button type="text" size="mini" @click="onAttachment(scope.row)"><i class="el-icon-paperclip" /></el-button>
+        </template>
+      </el-table-column>
 
-          <el-form-item label="送修单位" prop="repairUnit" required>
-            <el-input v-model="formData.repairUnit" placeholder="请输入"></el-input>
-          </el-form-item>
+      <el-table-column label="操作" width="140" fixed="right" align="center">
+        <template slot-scope="scope">
+          <template v-if="!scope.row._editing">
+            <el-button type="text" size="mini" @click="editRow(scope.$index, scope.row)">编辑</el-button>
+            <el-divider direction="vertical" />
+            <el-popconfirm title="确定删除该行吗？" @confirm="removeRow(scope.$index)">
+              <el-button slot="reference" type="text" size="mini">删除</el-button>
+            </el-popconfirm>
+          </template>
+          <template v-else>
+            <el-button type="text" size="mini" @click="saveRow(scope.row)">保存</el-button>
+            <el-divider direction="vertical" />
+            <el-button type="text" size="mini" @click="cancelEdit(scope.$index, scope.row)">取消</el-button>
+          </template>
+        </template>
+      </el-table-column>
+    </el-table>
 
-          <el-form-item label="联系电话" prop="returnPhone" required>
-            <el-input v-model="formData.returnPhone" placeholder="请输入"></el-input>
-          </el-form-item>
-        </el-col>
-      </el-row>
-    </el-form>
-
-    <!-- 详细地址弹窗 -->
-    <el-dialog
-      title="详细地址"
-      :visible.sync="addressDialogVisible"
-      width="600px"
-    >
-      <el-form :model="addressForm" label-width="80px">
-        <el-form-item label="详细地址">
-          <el-input 
-            v-model="addressForm.detailAddress" 
-            type="textarea" 
-            :rows="4"
-            placeholder="请输入详细地址"
-          ></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="addressDialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="confirmAddress">确定</el-button>
-      </div>
-    </el-dialog>
+    <div class="table-footer">
+      <el-button type="text" icon="el-icon-plus" @click="addRow">新增</el-button>
+    </div>
   </div>
+  
 </template>
 
 <script>
 export default {
-  name: 'ReceivingRegistration',
+  name: 'HikTabDemo',
   data() {
     return {
-      formData: {
-        repairType: '', // 返修类型
-        receivingMethod: '', // 接修方式
-        expressNumber: '', // 快递单号
-        returnMethod: '', // 返回方式
-        returnAddress: '', // 返回地址
-        contactPerson: '', // 联系人
-        expressCompany: '', // 快递公司
-        returnContact: '', // 返回联系人
-        customerAddress: '', // 客户地址
-        remarks: '', // 收货备注
-        contactPhone: '', // 联系电话
-        repairUnit: '', // 送修单位
-        returnPhone: '' // 返回联系电话
-      },
-      addressDialogVisible: false,
-      addressForm: {
-        detailAddress: ''
-      },
-      rules: {
-        repairType: [
-          { required: true, message: '请选择返修类型', trigger: 'change' }
-        ],
-        receivingMethod: [
-          { required: true, message: '请选择接修方式', trigger: 'change' }
-        ],
-        expressNumber: [
-          { required: true, message: '请输入快递单号', trigger: 'blur' }
-        ],
-        returnMethod: [
-          { required: true, message: '请选择返回方式', trigger: 'change' }
-        ],
-        returnAddress: [
-          { required: true, message: '请选择返回地址', trigger: 'change' }
-        ],
-        contactPerson: [
-          { required: true, message: '请输入联系人', trigger: 'blur' }
-        ],
-        expressCompany: [
-          { required: true, message: '请输入快递公司', trigger: 'blur' }
-        ],
-        returnContact: [
-          { required: true, message: '请选择联系人', trigger: 'change' }
-        ],
-        customerAddress: [
-          { required: true, message: '请选择客户地址', trigger: 'change' }
-        ],
-        contactPhone: [
-          { required: true, message: '请输入联系电话', trigger: 'blur' },
-          { pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号码', trigger: 'blur' }
-        ],
-        repairUnit: [
-          { required: true, message: '请输入送修单位', trigger: 'blur' }
-        ],
-        returnPhone: [
-          { required: true, message: '请输入联系电话', trigger: 'blur' },
-          { pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号码', trigger: 'blur' }
-        ]
-      }
+      tableData: [
+        {
+          serialNo: 'B10230221',
+          refSerialNo: 'B10230221',
+          logisticsNo: '300100011',
+          model: 'DS-7104HGHI-F1(STD)',
+          category: 'A类',
+          source: 'ODM',
+          version: '显点',
+          deliveryUnit: '一致',
+          customerIssue: '无法上电',
+          _editing: false
+        },
+        {
+          serialNo: 'H10256983',
+          refSerialNo: 'H10256983',
+          logisticsNo: '300100012',
+          model: 'DS-2DM1-614H(国内标配)',
+          category: 'A类',
+          source: 'ODM',
+          version: '显点',
+          deliveryUnit: '不一致',
+          customerIssue: '录像机清楚无法读取',
+          _editing: false
+        },
+        {
+          serialNo: '',
+          refSerialNo: '',
+          logisticsNo: '',
+          model: '',
+          category: 'A类',
+          source: 'ODM',
+          version: '显点',
+          deliveryUnit: '入账',
+          customerIssue: '',
+          _editing: true
+        }
+      ],
+      productOptions: [
+        'DS-7104HGHI-F1(STD)',
+        'DS-2DM1-614H(国内标配)',
+        'DS-7108HGHI-F1',
+        'DS-7716NI-I4'
+      ],
+      categoryOptions: ['A类', 'B类', 'C类'],
+      sourceOptions: ['ODM', '自研', '代理'],
+      versionOptions: ['固件版', '显点', '面板版'],
+      unitOptions: ['一致', '不一致', '入账']
     }
   },
   methods: {
-    // 提交表单
-    handleSubmit() {
-      this.$refs.receivingForm.validate((valid) => {
-        if (valid) {
-          this.$message.success('提交成功！');
-          console.log('提交数据:', this.formData);
-          // 这里可以调用API提交数据
-        } else {
-          this.$message.error('请检查表单信息！');
-        }
-      });
+    onBatchImport() {
+      this.$message.info('点击了批量导入')
     },
-    
-    // 保存表单
-    handleSave() {
-      this.$refs.receivingForm.validate((valid) => {
-        if (valid) {
-          this.$message.success('保存成功！');
-          console.log('保存数据:', this.formData);
-          // 这里可以调用API保存数据
-        } else {
-          this.$message.error('请检查表单信息！');
-        }
-      });
+    onPrintReceive() {
+      this.$message.success('打印收货单')
     },
-    
-    // 显示返回地址详细地址
-    showReturnAddressDetail() {
-      this.addressDialogVisible = true;
-      this.addressForm.detailAddress = this.formData.returnAddressDetail || '';
+    onPrintRepairCode() {
+      this.$message.success('打印维修单条码')
     },
-    
-    // 显示客户地址详细地址
-    showCustomerAddressDetail() {
-      this.addressDialogVisible = true;
-      this.addressForm.detailAddress = this.formData.customerAddressDetail || '';
+    onAttachment(row) {
+      this.$message('打开附件/随机物料弹窗')
     },
-    
-    // 确认地址
-    confirmAddress() {
-      this.addressDialogVisible = false;
-      // 这里可以根据需要保存详细地址
+    addRow() {
+      this.tableData.push({
+        serialNo: '',
+        refSerialNo: '',
+        logisticsNo: '',
+        model: '',
+        category: 'A类',
+        source: 'ODM',
+        version: '显点',
+        deliveryUnit: '',
+        customerIssue: '',
+        _editing: true
+      })
     },
-    
-    // 搜索快递公司
-    searchExpressCompany() {
-      this.$message.info('搜索快递公司功能');
-      // 这里可以实现搜索快递公司的逻辑
+    editRow(index, row) {
+      this.$set(row, '_backup', { ...row })
+      this.$set(row, '_editing', true)
+    },
+    cancelEdit(index, row) {
+      if (row._backup) {
+        const backup = { ...row._backup }
+        delete backup._backup
+        delete backup._editing
+        this.$set(this.tableData, index, { ...backup, _editing: false })
+      } else {
+        this.$set(row, '_editing', false)
+      }
+    },
+    saveRow(row) {
+      this.$delete(row, '_backup')
+      this.$set(row, '_editing', false)
+      this.$message.success('已保存')
+    },
+    removeRow(index) {
+      this.tableData.splice(index, 1)
     }
   }
 }
 </script>
 
 <style scoped>
-.receiving-registration {
-  padding: 20px;
-  background-color: #f5f5f5;
-  min-height: 100vh;
+.rma-receive-detail {
+  background: #fff;
+  padding: 12px;
 }
-
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-  padding: 20px;
-  background-color: #fff;
-  border-radius: 4px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+.toolbar {
+  margin-bottom: 10px;
 }
-
-.header-left {
-  display: flex;
+.table-footer {
+  margin-top: 8px;
+}
+.th-flex {
+  display: inline-flex;
   align-items: center;
 }
-
-.page-title {
-  margin: 0 20px 0 0;
-  color: #303133;
-  font-size: 20px;
-  font-weight: 500;
+.th-tip {
+  color: #909399;
+  margin-left: 4px;
 }
-
-.tab-link {
-  font-size: 14px;
+.ml8 {
+  margin-left: 8px;
 }
-
-.header-right {
+.edit-flex {
   display: flex;
-  gap: 10px;
+  align-items: center;
 }
-
-.receiving-form {
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 4px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.el-form-item {
-  margin-bottom: 20px;
-}
-
-.el-form-item__label {
-  font-weight: 500;
-  color: #606266;
-}
-
-.el-radio-group {
-  width: 100%;
-}
-
-.el-radio {
-  margin-right: 20px;
-}
-
-.dialog-footer {
-  text-align: right;
-}
-
-/* 必填字段标识 */
-.el-form-item.is-required .el-form-item__label::before {
-  content: '*';
-  color: #f56c6c;
-  margin-right: 4px;
+.tag-wrap >>> .el-tag + .el-tag {
+  margin-left: 6px;
 }
 </style>
+
+
