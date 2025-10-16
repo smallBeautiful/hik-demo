@@ -130,7 +130,7 @@
       <el-button type="text" icon="el-icon-plus" @click="addRow">新增</el-button>
     </div>
   </div>
-  
+
 </template>
 
 <script>
