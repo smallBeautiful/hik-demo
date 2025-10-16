@@ -95,6 +95,22 @@ export const constantRoutes = [
   },
 
   {
+    path: '/render',
+    component: Layout,
+    redirect: '/render/h',
+    name: 'h',
+    meta: { title: 'h函数', icon: 'el-icon-s-help' },
+    children: [
+      {
+        path: 'h',
+        name: 'h',
+        component: () => import('@/views/render/h'),
+        meta: { title: 'h', icon: 'table' }
+      }
+    ]
+  },
+
+  {
     path: '/css2',
     component: Layout,
     redirect: '/css2/ellipsis',
@@ -111,12 +127,34 @@ export const constantRoutes = [
   },
 
   {
+    path: '/rma',
+    component: Layout,
+    redirect: '/rma/index',
+    name: '/Rma/index',
+    meta: { title: 'rma', icon: 'el-icon-s-help' },
+    children: [
+      {
+        path: 'editTable',
+        name: 'editTable',
+        component: () => import('@/views/rma/EditTable'),
+        meta: { title: 'editTable', icon: 'table' }
+      }
+    ]
+  },
+
+  {
     path: '/hik',
     component: Layout,
     redirect: '/hik/index',
     name: 'Hik',
     meta: { title: '组件', icon: 'el-icon-s-help' },
     children: [
+      {
+        path: 'tab',
+        name: 'tab',
+        component: () => import('@/views/hik/tab'),
+        meta: { title: 'tooltip', icon: 'table' }
+      },
       {
         path: 'tooltip',
         name: 'tooltip',
