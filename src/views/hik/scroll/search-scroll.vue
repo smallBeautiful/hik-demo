@@ -5,7 +5,7 @@
       <div class="title">title</div>
       <div class="title">title</div>
       <div ref="search" class="search">
-        <el-input v-model="searchValue" placeholder="请输入内容" />
+        <el-input v-model="searchValue" placeholder="请输入内容1" />
         <el-button @click="add">add</el-button>
         <div v-for="(item, index) in list" :key="index">{{ item }}</div>
       </div>
