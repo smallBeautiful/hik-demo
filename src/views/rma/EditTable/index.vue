@@ -1,8 +1,13 @@
 <template>
   <div>
     <el-button type="primary" style="margin-bottom: 10px;" @click="addRow">新增</el-button>
-
-    <el-table :data="tableData" style="width: 100%">
+    <div class="box"></div>
+    <div class="gradient-container">
+      <div class="gradient-box gradient-1">
+        <div class="gradient-title">左到右渐变</div>
+      </div>
+    </div>
+    <el-table :data="tableData" style="width: 100%" border :cell-class-name="cellClassName">
       <el-table-column prop="name" label="姓名">
         <template #default="{ row }">
           <el-input v-if="row.isEditing" v-model="row.name" />
@@ -69,6 +74,20 @@ export default {
   mounted() {
   },
   methods: {
+    cellClassName({ column, rowIndex, columnIndex }) {
+      if (column.property === 'name') {
+        return 'column-name'
+      } else if (column.property === 'age') {
+        return 'column-date'
+      } else if (column.property === 'email') {
+        return 'column-address'
+      } else if (column.property === 'status') {
+        return 'column-status'
+      } else if (columnIndex === 4) { // 操作列
+        return 'column-action'
+      }
+      return ''
+    },
     // 新增行
     addRow() {
       const newRow = {
@@ -130,8 +149,73 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
+.box {
+  width: 1200px;
+  height: 200px;
+  border: 1px solid #ccc;
+  margin-left: 16px;
+}
 .el-button {
   margin-right: 10px;
+}
+.column-name {
+  background-color: #e8f4fd !important; /* 淡蓝色 */
+}
+
+.column-date {
+  background-color: #f0f9eb !important; /* 淡绿色 */
+}
+
+.column-address {
+  background-color: #fdf6ec !important; /* 淡橙色 */
+}
+
+.column-status {
+  background-color: #fef0f0 !important; /* 淡红色 */
+}
+
+.column-action {
+  background-color: #f9f0ff !important; /* 淡紫色 */
+}
+
+.header-cell {
+  font-weight: bold;
+  color: #333;
+}
+.gradient-1 {
+  border: 1px dashed #ccc;
+  height: 300px;
+  background:
+/*    !* 左侧10%宽度渐变区域 *!
+    linear-gradient(to right,
+    rgba(255, 126, 95, 1) 0%,
+    rgba(255, 126, 95, 0) 10%),
+      !* 背景色 *!
+    #ffffff;*/
+  linear-gradient(to right,
+  rgba(255, 126, 95, .5) 0%,
+  rgba(255, 126, 95, 0) 10%),
+  #FFFFFF;
+}
+
+.gradient-2 {
+  background: linear-gradient(to bottom, #6a11cb, #2575fc);
+}
+
+.gradient-3 {
+  background: linear-gradient(to right, #43e97b, #38f9d7);
+}
+
+.gradient-4 {
+  background: linear-gradient(to bottom, #fa709a, #fee140);
+}
+
+.gradient-5 {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+}
+
+.gradient-6 {
+  background: linear-gradient(135deg, #f093fb, #f5576c);
 }
 </style>
