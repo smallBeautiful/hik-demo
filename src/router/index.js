@@ -304,6 +304,12 @@ export const constantRoutes = [
         name: 'tableScroll',
         component: () => import('@/views/hik/tableScroll'),
         meta: { title: 'searchScroll', icon: 'table' }
+      },
+      {
+        path: 'message',
+        name: 'message',
+        component: () => import('@/views/hik/message'),
+        meta: { title: 'message', icon: 'table' }
       }
     ]
   },
