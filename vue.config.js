@@ -1,6 +1,7 @@
 'use strict'
 const path = require('path')
 const defaultSettings = require('./src/settings.js')
+const { codeInspectorPlugin } = require('code-inspector-plugin');
 
 function resolve(dir) {
   return path.join(__dirname, dir)
@@ -60,6 +61,12 @@ module.exports = {
         include: 'initial'
       }
     ])
+
+    config.plugin('code-inspector-plugin').use(
+      codeInspectorPlugin({
+        bundler: 'webpack',
+      })
+    )
 
     // when there are many pages, it will cause too many meaningless requests
     config.plugins.delete('prefetch')
