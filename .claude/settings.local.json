@@ -1,7 +1,18 @@
 {
   "permissions": {
     "allow": [
-      "WebSearch"
+      "WebSearch",
+      "Bash(ls E:\\\\\\\\Code\\\\\\\\vue\\\\\\\\hik-demo\\\\\\\\src *)",
+      "Bash(ls E:\\\\\\\\Code\\\\\\\\vue\\\\\\\\hik-demo\\\\\\\\src\\\\\\\\views *)",
+      "Bash(ls E:\\\\\\\\Code\\\\\\\\vue\\\\\\\\hik-demo\\\\\\\\src\\\\\\\\views\\\\\\\\hik *)",
+      "Bash(npm run *)",
+      "Bash(NODE_OPTIONS=--openssl-legacy-provider npm run dev)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:9529)",
+      "Bash(set NODE_OPTIONS=--openssl-legacy-provider)",
+      "Bash(npx vue-cli-service *)",
+      "Bash(export NODE_OPTIONS=--openssl-legacy-provider)",
+      "Bash(curl -s http://localhost:9529/hik/robot)",
+      "Bash(curl *)"
     ]
   }
 }

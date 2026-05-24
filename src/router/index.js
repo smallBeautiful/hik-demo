@@ -310,6 +310,12 @@ export const constantRoutes = [
         name: 'message',
         component: () => import('@/views/hik/message'),
         meta: { title: 'message', icon: 'table' }
+      },
+      {
+        path: 'robot',
+        name: 'robot',
+        component: () => import('@/views/hik/robot'),
+        meta: { title: '悬浮机器人', icon: 'table' }
       }
     ]
   },
