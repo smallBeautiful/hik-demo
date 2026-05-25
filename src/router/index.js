@@ -316,6 +316,12 @@ export const constantRoutes = [
         name: 'robot',
         component: () => import('@/views/hik/robot'),
         meta: { title: '悬浮机器人', icon: 'table' }
+      },
+      {
+        path: 'scrollIntoView',
+        name: 'scrollIntoView',
+        component: () => import('@/views/hik/scrollIntoView'),
+        meta: { title: 'scrollIntoView', icon: 'table' }
       }
     ]
   },
