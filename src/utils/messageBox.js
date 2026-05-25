@@ -47,9 +47,12 @@ function createDialog(options) {
 
   const DialogCtor = Vue.extend({
     data: () => ({
-      visible: true,
+      visible: false,
       opts: options
     }),
+    mounted() {
+      this.$nextTick(() => { this.visible = true })
+    },
     methods: {
       handleConfirm() { this.visible = false; resolve() },
       handleCancel() { this.visible = false; reject(new Error('cancel')) },
