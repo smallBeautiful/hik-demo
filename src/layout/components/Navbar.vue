@@ -5,6 +5,16 @@
     <breadcrumb class="breadcrumb-container" />
 
     <div class="right-menu">
+      <!-- 机器人入口：关闭后显示在头像左侧 -->
+      <span
+        class="robot-nav-entry"
+        :class="{ visible: !robotVisible }"
+        @click="showRobot"
+        title="打开机器人助手"
+      >
+        <img src="@/components/FloatingRobot/robot2.png" alt="robot" class="robot-nav-img" draggable="false" />
+      </span>
+
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
           <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
@@ -41,15 +51,39 @@ export default {
     Breadcrumb,
     Hamburger
   },
+  data() {
+    return {
+      robotVisible: true
+    }
+  },
   computed: {
     ...mapGetters([
       'sidebar',
       'avatar'
     ])
   },
+  mounted() {
+    // 从 localStorage 读取初始状态
+    try {
+      const saved = JSON.parse(localStorage.getItem('floating-robot-state'));
+      if (saved && saved.featureEnabled) {
+        this.robotVisible = saved.visible !== false;
+      }
+    } catch (e) { /* ignore */ }
+
+    this.$root.$on('robot-visible-change', (val) => {
+      this.robotVisible = val
+    })
+  },
+  beforeDestroy() {
+    this.$root.$off('robot-visible-change')
+  },
   methods: {
     toggleSideBar() {
       this.$store.dispatch('app/toggleSideBar')
+    },
+    showRobot() {
+      this.$root.$emit('robot-show')
     },
     async logout() {
       await this.$store.dispatch('user/logout')
@@ -108,6 +142,29 @@ export default {
         &:hover {
           background: rgba(0, 0, 0, .025)
         }
+      }
+    }
+
+    .robot-nav-entry {
+      display: none;
+      vertical-align: top;
+      cursor: pointer;
+      margin-right: 12px;
+
+      &.visible {
+        display: inline-block;
+      }
+
+      .robot-nav-img {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        vertical-align: middle;
+        transition: transform 0.2s ease;
+      }
+
+      &:hover .robot-nav-img {
+        transform: scale(1.15);
       }
     }
 

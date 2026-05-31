@@ -1,15 +1,5 @@
 <template>
   <div class="robot-widget-root">
-    <!-- 顶部入口按钮：关闭后显示，点击重新打开悬浮模块 -->
-    <div
-      class="robot-entry"
-      v-show="!visible"
-      @click="showWidget"
-      title="打开机器人助手"
-    >
-      <img src="./robot2.png" alt="robot" class="entry-img" draggable="false" @dragstart.prevent />
-    </div>
-
     <!-- 悬浮模块主体 -->
     <div
     class="floating-widget"
@@ -77,6 +67,7 @@
 <script>
 const DRAG_THRESHOLD = 3;    // 移动超过 3px 触发拖拽
 const EDGE_THRESHOLD = 20;   // 距右边缘 20px 内触发收起
+const STORAGE_KEY = 'floating-robot-state';
 
 export default {
   name: 'FloatingWidget',
@@ -94,7 +85,25 @@ export default {
       cardClipRight: 0,        // 拖出时卡片右侧裁剪量 (px)
       dragFromCollapsed: false, // 是否正在从收起状态拖出（保持头部倾斜）
       showGreeting: false,     // 招呼语气泡显隐
+      featureEnabled: false,     // 是否记录状态（关闭则每次进入默认展开）
     };
+  },
+
+  watch: {
+    visible(val) {
+      this._saveState();
+      this.$root.$emit('robot-visible-change', val);
+    },
+    collapsed() { this._saveState(); },
+    featureEnabled(val) {
+      if (!val) {
+        // 关闭开关 → 重置为默认展开状态
+        this.showWidget();
+        this.hideGreetingBubble();
+      }
+      this._saveState();
+      this.$root.$emit('robot-visible-change', this.visible);
+    },
   },
 
   computed: {
@@ -284,6 +293,7 @@ export default {
           }, 500);
         }
       }
+      this._saveState();
     },
 
     // ==================== 功能项点击 ====================
@@ -291,6 +301,41 @@ export default {
       if (this._dragOccurred) return;
       if (type === 'customerService') this.handleCustomerService();
       else if (type === 'feedback') this.handleFeedback();
+    },
+
+    // ==================== 持久化 ====================
+    _loadState() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        if (saved) {
+          this.featureEnabled = saved.featureEnabled !== false;
+          // 只有开关打开时才恢复三种状态
+          if (this.featureEnabled) {
+            this.visible = saved.visible !== false;
+            this.collapsed = saved.collapsed || false;
+            if (saved.position && (saved.useCustomPosition || saved.collapsed)) {
+              this.position = saved.position;
+            }
+            this.useCustomPosition = saved.useCustomPosition || false;
+            if (saved.collapsed) {
+              this.useCustomPosition = true;
+            }
+          }
+        }
+      } catch (e) { /* ignore */ }
+    },
+    _saveState() {
+      // 开关关闭时不保存
+      if (!this.featureEnabled) return;
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+          visible: this.visible,
+          collapsed: this.collapsed,
+          position: this.position,
+          useCustomPosition: this.useCustomPosition,
+          featureEnabled: this.featureEnabled,
+        }));
+      } catch (e) { /* ignore */ }
     },
 
     handleCustomerService() {
@@ -304,11 +349,16 @@ export default {
   },
 
   mounted() {
+    this._loadState();
     this._onActivity = () => this.resetIdleTimer();
     document.addEventListener('mousemove', this._onActivity);
     document.addEventListener('mousedown', this._onActivity);
     document.addEventListener('keydown', this._onActivity);
     this.resetIdleTimer();
+    // 通知 Navbar 初始状态
+    this.$root.$emit('robot-visible-change', this.visible);
+    // 监听 Navbar 入口点击
+    this.$root.$on('robot-show', this.showWidget);
   },
 
   beforeDestroy() {
@@ -317,6 +367,7 @@ export default {
     document.removeEventListener('mousemove', this._onActivity);
     document.removeEventListener('mousedown', this._onActivity);
     document.removeEventListener('keydown', this._onActivity);
+    this.$root.$off('robot-show', this.showWidget);
     if (this._onMove) {
       document.removeEventListener('mousemove', this._onMove);
       document.removeEventListener('mouseup', this._onUp);
@@ -326,49 +377,6 @@ export default {
 </script>
 
 <style scoped>
-/* ==================== 顶部入口按钮 ==================== */
-.robot-entry {
-  position: fixed;
-  top: 20px;
-  right: 24px;
-  z-index: 999;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: #ffffff;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  animation: entry-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.robot-entry:hover {
-  transform: scale(1.1);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-}
-
-.entry-img {
-  width: 30px;
-  height: auto;
-  object-fit: contain;
-  -webkit-user-drag: none;
-  user-drag: none;
-}
-
-@keyframes entry-in {
-  from {
-    opacity: 0;
-    transform: scale(0.5) translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
-}
-
 /* ==================== 悬浮模块主体 ==================== */
 .floating-widget {
   position: fixed;
