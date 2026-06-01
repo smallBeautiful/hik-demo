@@ -21,11 +21,9 @@
         tilted: (collapsed || dragFromCollapsed) && !peekingIn,
         'peek-in': peekingIn,
       }"
-      @mouseenter="onRobotEnter"
-      @mouseleave="onRobotLeave"
     >
       <!-- 招呼语气泡 -->
-      <div class="greeting-bubble" v-show="showGreeting && !isDragging">
+      <div class="greeting-bubble" v-show="showGreeting">
         <span class="greeting-inner" :class="{ tilted: collapsed || dragFromCollapsed }">
           <span class="greeting-text">HI,需要帮助吗？</span>
         </span>
@@ -85,7 +83,9 @@ export default {
       cardClipRight: 0,        // 拖出时卡片右侧裁剪量 (px)
       dragFromCollapsed: false, // 是否正在从收起状态拖出（保持头部倾斜）
       showGreeting: false,     // 招呼语气泡显隐
-      featureEnabled: false,     // 是否记录状态（关闭则每次进入默认展开）
+      greetingInterval: 3,    // 每隔 N 秒出现一次
+      greetingDuration: 3,     // 每次持续 N 秒
+      featureEnabled: true,    // 是否记录状态（关闭则每次进入默认展开）
     };
   },
 
@@ -99,7 +99,7 @@ export default {
       if (!val) {
         // 关闭开关 → 重置为默认展开状态
         this.showWidget();
-        this.hideGreetingBubble();
+        this._startGreetingCycle();
       }
       this._saveState();
       this.$root.$emit('robot-visible-change', this.visible);
@@ -155,40 +155,43 @@ export default {
       this.isHovering = false;
     },
 
-    // ==================== 招呼语气泡 ====================
-    onRobotEnter() {
-      this.showGreetingBubble();
+    // ==================== 招呼语循环 ====================
+    _startGreetingCycle() {
+      this._stopGreetingCycle();
+      this._scheduleGreetingShow();
     },
-    onRobotLeave() {
-      this.hideGreetingBubble();
-    },
-    showGreetingBubble() {
-      clearTimeout(this._greetingTimer);
-      this.showGreeting = true;
-    },
-    hideGreetingBubble() {
-      clearTimeout(this._greetingTimer);
+    _stopGreetingCycle() {
+      clearTimeout(this._greetingShowTimer);
+      clearTimeout(this._greetingHideTimer);
       this.showGreeting = false;
     },
-    resetIdleTimer() {
-      clearTimeout(this._idleTimer);
-      this._idleTimer = setTimeout(() => {
-        if (this.visible && !this.isDragging) {
-          this.showGreetingBubble();
-        }
-      }, 2000);
+    _scheduleGreetingShow() {
+      clearTimeout(this._greetingHideTimer);
+      this.showGreeting = false;
+      this._greetingShowTimer = setTimeout(() => {
+        this.showGreeting = true;
+        this._scheduleGreetingHide();
+      }, this.greetingInterval * 1000);
+    },
+    _scheduleGreetingHide() {
+      clearTimeout(this._greetingShowTimer);
+      this._greetingHideTimer = setTimeout(() => {
+        this.showGreeting = false;
+        this._scheduleGreetingShow();
+      }, this.greetingDuration * 1000);
     },
 
     // ==================== 关闭 / 打开 ====================
     hideWidget() {
       this.visible = false;
-      this.hideGreetingBubble();
+      this._stopGreetingCycle();
     },
     showWidget() {
       this.visible = true;
       this.useCustomPosition = false;
       this.collapsed = false;
       this.position = { x: 0, y: 0 };
+      this._startGreetingCycle();
     },
 
     // ==================== 拖拽 ====================
@@ -228,7 +231,6 @@ export default {
         this.isDragging = true;
         this.useCustomPosition = true;
         this._hasMoved = true;
-        this.hideGreetingBubble();
         // 记录拖拽起点是否处于收起状态
         this._wasCollapsedStart = this.collapsed;
         if (this.collapsed) {
@@ -350,11 +352,10 @@ export default {
 
   mounted() {
     this._loadState();
-    this._onActivity = () => this.resetIdleTimer();
-    document.addEventListener('mousemove', this._onActivity);
-    document.addEventListener('mousedown', this._onActivity);
-    document.addEventListener('keydown', this._onActivity);
-    this.resetIdleTimer();
+    // 启动招呼语循环
+    if (this.visible) {
+      this._startGreetingCycle();
+    }
     // 通知 Navbar 初始状态
     this.$root.$emit('robot-visible-change', this.visible);
     // 监听 Navbar 入口点击
@@ -362,11 +363,7 @@ export default {
   },
 
   beforeDestroy() {
-    clearTimeout(this._idleTimer);
-    clearTimeout(this._greetingTimer);
-    document.removeEventListener('mousemove', this._onActivity);
-    document.removeEventListener('mousedown', this._onActivity);
-    document.removeEventListener('keydown', this._onActivity);
+    this._stopGreetingCycle();
     this.$root.$off('robot-show', this.showWidget);
     if (this._onMove) {
       document.removeEventListener('mousemove', this._onMove);
