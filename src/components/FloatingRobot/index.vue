@@ -83,8 +83,9 @@ export default {
       cardClipRight: 0,        // 拖出时卡片右侧裁剪量 (px)
       dragFromCollapsed: false, // 是否正在从收起状态拖出（保持头部倾斜）
       showGreeting: false,     // 招呼语气泡显隐
-      greetingInterval: 3,    // 每隔 N 秒出现一次
-      greetingDuration: 3,     // 每次持续 N 秒
+      greetingInterval: 1,    // 间隔 N 秒后出现下一次
+      greetingDuration: 3,    // 每次持续 N 秒
+      greetingGap: 3,         // 消失后的停滞期 N 秒
       featureEnabled: true,    // 是否记录状态（关闭则每次进入默认展开）
     };
   },
@@ -163,6 +164,7 @@ export default {
     _stopGreetingCycle() {
       clearTimeout(this._greetingShowTimer);
       clearTimeout(this._greetingHideTimer);
+      clearTimeout(this._greetingGapTimer);
       this.showGreeting = false;
     },
     _scheduleGreetingShow() {
@@ -177,7 +179,10 @@ export default {
       clearTimeout(this._greetingShowTimer);
       this._greetingHideTimer = setTimeout(() => {
         this.showGreeting = false;
-        this._scheduleGreetingShow();
+        // 停滞期结束后再进入"间隔 → 显示"循环
+        this._greetingGapTimer = setTimeout(() => {
+          this._scheduleGreetingShow();
+        }, this.greetingGap * 1000);
       }, this.greetingDuration * 1000);
     },
 
