@@ -12,7 +12,9 @@
       "Bash(npx vue-cli-service *)",
       "Bash(export NODE_OPTIONS=--openssl-legacy-provider)",
       "Bash(curl -s http://localhost:9529/hik/robot)",
-      "Bash(curl *)"
+      "Bash(curl *)",
+      "Bash(node -e ' *)",
+      "Bash(node -e *)"
     ]
   }
 }

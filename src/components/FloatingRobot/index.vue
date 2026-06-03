@@ -28,7 +28,7 @@
           <span class="greeting-text">HI,需要帮助吗？</span>
         </span>
       </div>
-      <img src="./robot2.png" alt="robot" class="mascot-img" draggable="false" @dragstart.prevent />
+      <img :src="gifSrc" alt="robot" class="mascot-img" draggable="false" @dragstart.prevent />
     </div>
 
     <!-- 白色功能卡片：收起时隐藏 -->
@@ -63,6 +63,8 @@
 </template>
 
 <script>
+import robotGif from './robot.gif';
+
 const DRAG_THRESHOLD = 3;    // 移动超过 3px 触发拖拽
 const EDGE_THRESHOLD = 20;   // 距右边缘 20px 内触发收起
 const STORAGE_KEY = 'floating-robot-state';
@@ -83,9 +85,10 @@ export default {
       cardClipRight: 0,        // 拖出时卡片右侧裁剪量 (px)
       dragFromCollapsed: false, // 是否正在从收起状态拖出（保持头部倾斜）
       showGreeting: false,     // 招呼语气泡显隐
-      greetingInterval: 1,    // 间隔 N 秒后出现下一次
-      greetingDuration: 3,    // 每次持续 N 秒
-      greetingGap: 3,         // 消失后的停滞期 N 秒
+      greetingInterval: 2.2,  // 0-1.5s 不展示
+      greetingDuration: 1.5,    // 1.5-3.5s 展示
+      greetingGap: 1,       // 3.5-4.7s 停滞
+      gifSrc: robotGif,        // GIF 资源路径（重启时清空再还原）
       featureEnabled: true,    // 是否记录状态（关闭则每次进入默认展开）
     };
   },
@@ -156,34 +159,48 @@ export default {
       this.isHovering = false;
     },
 
-    // ==================== 招呼语循环 ====================
+    // ==================== GIF 重启（从缓存，不发网络请求） ====================
+    _restartGif() {
+      this.gifSrc = '';
+      this.$nextTick(() => {
+        this.gifSrc = robotGif;
+      });
+    },
+
+    // ==================== 招呼语循环（绝对时钟，消除累积误差） ====================
     _startGreetingCycle() {
       this._stopGreetingCycle();
-      this._scheduleGreetingShow();
+      this._stopped = false;
+      this._cycleStart = performance.now();
+      this._phaseInterval();
     },
     _stopGreetingCycle() {
-      clearTimeout(this._greetingShowTimer);
-      clearTimeout(this._greetingHideTimer);
-      clearTimeout(this._greetingGapTimer);
+      clearTimeout(this._greetingTimer);
+      this._stopped = true;
       this.showGreeting = false;
     },
-    _scheduleGreetingShow() {
-      clearTimeout(this._greetingHideTimer);
+    _phaseInterval() {
+      if (this._stopped) return;
       this.showGreeting = false;
-      this._greetingShowTimer = setTimeout(() => {
-        this.showGreeting = true;
-        this._scheduleGreetingHide();
-      }, this.greetingInterval * 1000);
+      const target = this._cycleStart + this.greetingInterval * 1000;
+      this._greetingTimer = setTimeout(() => this._phaseShow(), Math.max(0, target - performance.now()));
     },
-    _scheduleGreetingHide() {
-      clearTimeout(this._greetingShowTimer);
-      this._greetingHideTimer = setTimeout(() => {
-        this.showGreeting = false;
-        // 停滞期结束后再进入"间隔 → 显示"循环
-        this._greetingGapTimer = setTimeout(() => {
-          this._scheduleGreetingShow();
-        }, this.greetingGap * 1000);
-      }, this.greetingDuration * 1000);
+    _phaseShow() {
+      if (this._stopped) return;
+      this.showGreeting = true;
+      const target = this._cycleStart + (this.greetingInterval + this.greetingDuration) * 1000;
+      this._greetingTimer = setTimeout(() => this._phaseGap(), Math.max(0, target - performance.now()));
+    },
+    _phaseGap() {
+      if (this._stopped) return;
+      this.showGreeting = false;
+      const total = this.greetingInterval + this.greetingDuration + this.greetingGap;
+      const target = this._cycleStart + total * 1000;
+      this._greetingTimer = setTimeout(() => {
+        // 新循环开始，重置参考点
+        this._cycleStart = performance.now();
+        this._phaseInterval();
+      }, Math.max(0, target - performance.now()));
     },
 
     // ==================== 关闭 / 打开 ====================
@@ -365,11 +382,23 @@ export default {
     this.$root.$emit('robot-visible-change', this.visible);
     // 监听 Navbar 入口点击
     this.$root.$on('robot-show', this.showWidget);
+    // 页面可见性变化时重新同步
+    this._onVisibilityChange = () => {
+      if (document.hidden) {
+        this._stopGreetingCycle();
+      } else if (this.visible) {
+        // 从缓存重启 GIF + 招呼语重新开始，两者同步
+        this._restartGif();
+        this._startGreetingCycle();
+      }
+    };
+    document.addEventListener('visibilitychange', this._onVisibilityChange);
   },
 
   beforeDestroy() {
     this._stopGreetingCycle();
     this.$root.$off('robot-show', this.showWidget);
+    document.removeEventListener('visibilitychange', this._onVisibilityChange);
     if (this._onMove) {
       document.removeEventListener('mousemove', this._onMove);
       document.removeEventListener('mouseup', this._onUp);
