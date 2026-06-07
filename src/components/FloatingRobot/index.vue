@@ -209,6 +209,8 @@ export default {
       this._stopGreetingCycle();
     },
     showWidget() {
+      // 如果正在拖拽中，先强制清理
+      this._cancelDrag();
       this.visible = true;
       this.useCustomPosition = false;
       this.collapsed = false;
@@ -218,6 +220,9 @@ export default {
 
     // ==================== 拖拽 ====================
     onMouseDown(e) {
+      // 如果之前拖拽异常中断（如失焦/切标签页），先释放残留状态
+      this._cancelDrag();
+
       // 初始化内部状态
       this._dragOccurred = false;
       this._hasMoved = false;
@@ -234,11 +239,11 @@ export default {
       this._offsetX = e.clientX - rect.left;
       this._offsetY = e.clientY - rect.top;
 
-      // 绑定 document 事件（在 mousedown 时绑定，mouseup 时解绑）
+      // mousemove 在 document，mouseup 在 window（跨窗口外释放也能捕获）
       this._onMove = (ev) => this._handleMove(ev);
       this._onUp = (ev) => this._handleUp(ev);
       document.addEventListener('mousemove', this._onMove);
-      document.addEventListener('mouseup', this._onUp);
+      window.addEventListener('mouseup', this._onUp);
     },
 
     _handleMove(e) {
@@ -277,9 +282,9 @@ export default {
     },
 
     _handleUp() {
-      // 解绑事件
+      // 解绑事件（mouseup 在 window 上，mousemove 在 document 上）
       document.removeEventListener('mousemove', this._onMove);
-      document.removeEventListener('mouseup', this._onUp);
+      window.removeEventListener('mouseup', this._onUp);
       this._onMove = null;
       this._onUp = null;
 
@@ -318,6 +323,27 @@ export default {
         }
       }
       this._saveState();
+    },
+
+    // ==================== 取消拖拽（异常中断恢复） ====================
+    _cancelDrag() {
+      if (!this.isDragging && !this._onMove && !this._onUp) return;
+      // 解绑所有拖拽事件
+      if (this._onMove) {
+        document.removeEventListener('mousemove', this._onMove);
+        this._onMove = null;
+      }
+      if (this._onUp) {
+        window.removeEventListener('mouseup', this._onUp);
+        this._onUp = null;
+      }
+      // 重置拖拽状态
+      this.isDragging = false;
+      this.cardClipRight = 0;
+      this.dragFromCollapsed = false;
+      this._wasCollapsedStart = false;
+      this._dragOccurred = false;
+      this._hasMoved = false;
     },
 
     // ==================== 功能项点击 ====================
@@ -382,9 +408,17 @@ export default {
     this.$root.$emit('robot-visible-change', this.visible);
     // 监听 Navbar 入口点击
     this.$root.$on('robot-show', this.showWidget);
+    // 窗口失焦时强制取消拖拽（Alt+Tab / 弹窗等场景）
+    this._onBlur = () => {
+      this._cancelDrag();
+    };
+    window.addEventListener('blur', this._onBlur);
+
     // 页面可见性变化时重新同步
     this._onVisibilityChange = () => {
       if (document.hidden) {
+        // 页面隐藏时取消拖拽 + 停止招呼语循环
+        this._cancelDrag();
         this._stopGreetingCycle();
       } else if (this.visible) {
         // 从缓存重启 GIF + 招呼语重新开始，两者同步
@@ -397,11 +431,12 @@ export default {
 
   beforeDestroy() {
     this._stopGreetingCycle();
+    this._cancelDrag();
     this.$root.$off('robot-show', this.showWidget);
     document.removeEventListener('visibilitychange', this._onVisibilityChange);
-    if (this._onMove) {
-      document.removeEventListener('mousemove', this._onMove);
-      document.removeEventListener('mouseup', this._onUp);
+    if (this._onBlur) {
+      window.removeEventListener('blur', this._onBlur);
+      this._onBlur = null;
     }
   },
 };
