@@ -71,6 +71,8 @@ const actions = {
         removeToken() // must remove  token  first
         resetRouter()
         commit('RESET_STATE')
+        // 退出登录时清除机器人状态，下次登录恢复默认
+        localStorage.removeItem('floating-robot-state')
         resolve()
       }).catch(error => {
         reject(error)

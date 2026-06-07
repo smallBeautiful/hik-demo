@@ -63,10 +63,10 @@ export default {
     ])
   },
   mounted() {
-    // 从 localStorage 读取初始状态
+    // 从 localStorage 读取初始可见状态
     try {
       const saved = JSON.parse(localStorage.getItem('floating-robot-state'));
-      if (saved && saved.featureEnabled) {
+      if (saved) {
         this.robotVisible = saved.visible !== false;
       }
     } catch (e) { /* ignore */ }

@@ -14,7 +14,9 @@
       "Bash(curl -s http://localhost:9529/hik/robot)",
       "Bash(curl *)",
       "Bash(node -e ' *)",
-      "Bash(node -e *)"
+      "Bash(node -e *)",
+      "Bash(python3 *)",
+      "Bash(/c/Users/6677/AppData/Local/Programs/Python/Python39-32/python *)"
     ]
   }
 }

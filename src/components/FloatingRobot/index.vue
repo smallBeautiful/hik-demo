@@ -89,7 +89,6 @@ export default {
       greetingDuration: 1.5,    // 1.5-3.5s 展示
       greetingGap: 1,       // 3.5-4.7s 停滞
       gifSrc: robotGif,        // GIF 资源路径（重启时清空再还原）
-      featureEnabled: true,    // 是否记录状态（关闭则每次进入默认展开）
     };
   },
 
@@ -99,15 +98,6 @@ export default {
       this.$root.$emit('robot-visible-change', val);
     },
     collapsed() { this._saveState(); },
-    featureEnabled(val) {
-      if (!val) {
-        // 关闭开关 → 重置为默认展开状态
-        this.showWidget();
-        this._startGreetingCycle();
-      }
-      this._saveState();
-      this.$root.$emit('robot-visible-change', this.visible);
-    },
   },
 
   computed: {
@@ -121,8 +111,13 @@ export default {
 
       if (this.collapsed) {
         style.right = '-24px';
-        style.top = this.position.y + 'px';
-        style.bottom = 'auto';
+        if (this.useCustomPosition) {
+          style.top = this.position.y + 'px';
+          style.bottom = 'auto';
+        } else {
+          // 无自定义位置时提高收起位置，与展开状态顶部对齐
+          style.bottom = '230px';
+        }
         style.left = 'auto';
       } else {
         style.left = this.position.x + 'px';
@@ -358,32 +353,17 @@ export default {
       try {
         const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
         if (saved) {
-          this.featureEnabled = saved.featureEnabled !== false;
-          // 只有开关打开时才恢复三种状态
-          if (this.featureEnabled) {
-            this.visible = saved.visible !== false;
-            this.collapsed = saved.collapsed || false;
-            if (saved.position && (saved.useCustomPosition || saved.collapsed)) {
-              this.position = saved.position;
-            }
-            this.useCustomPosition = saved.useCustomPosition || false;
-            if (saved.collapsed) {
-              this.useCustomPosition = true;
-            }
-          }
+          // 只恢复 visible / collapsed，不恢复 position
+          this.visible = saved.visible !== false;
+          this.collapsed = saved.collapsed || false;
         }
       } catch (e) { /* ignore */ }
     },
     _saveState() {
-      // 开关关闭时不保存
-      if (!this.featureEnabled) return;
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify({
           visible: this.visible,
           collapsed: this.collapsed,
-          position: this.position,
-          useCustomPosition: this.useCustomPosition,
-          featureEnabled: this.featureEnabled,
         }));
       } catch (e) { /* ignore */ }
     },
