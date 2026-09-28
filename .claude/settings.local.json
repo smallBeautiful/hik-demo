@@ -16,7 +16,16 @@
       "Bash(node -e ' *)",
       "Bash(node -e *)",
       "Bash(python3 *)",
-      "Bash(/c/Users/6677/AppData/Local/Programs/Python/Python39-32/python *)"
+      "Bash(/c/Users/6677/AppData/Local/Programs/Python/Python39-32/python *)",
+      "Bash(npm install *)",
+      "Bash(npx -y element-ui-mcp --help)",
+      "Bash(npm list *)",
+      "mcp__element-ui__list_components",
+      "Bash(npx jest *)",
+      "Bash(npx eslint *)"
     ]
-  }
+  },
+  "enabledMcpjsonServers": [
+    "element-ui"
+  ]
 }

@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "element-ui": {
+      "command": "npx",
+      "args": ["-y", "element-ui-mcp"]
+    }
+  }
+}

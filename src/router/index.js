@@ -216,6 +216,12 @@ export const constantRoutes = [
         meta: { title: 'color', icon: 'table' }
       },
       {
+        path: 'calc',
+        name: 'calc',
+        component: () => import('@/views/hik/calc/index'),
+        meta: { title: '计算工具', icon: 'table' }
+      },
+      {
         path: 'fold',
         name: 'fold',
         component: () => import('@/views/hik/fold'),
