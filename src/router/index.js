@@ -312,6 +312,12 @@ export const constantRoutes = [
         meta: { title: 'searchScroll', icon: 'table' }
       },
       {
+        path: 'tableMerge',
+        name: 'tableMerge',
+        component: () => import('@/views/hik/tableMerge'),
+        meta: { title: '表格合并', icon: 'table' }
+      },
+      {
         path: 'message',
         name: 'message',
         component: () => import('@/views/hik/message'),
